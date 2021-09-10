@@ -76,8 +76,8 @@ export default function Terminal({ logic, tree }) {
       const param = (p) => [...parameters].indexOf(p) >= 0;
       const response = Object.keys(location).map((file, i) => [
         `${param("i") ? `${i}\t` : ""}`,
-        `${param("l") ? `${typeof location[file] === "string" ? "-a----" : "d-----"}\t` : ""}`,
-        `${param("l") ? `${typeof location[file] === "string" ? location[file].length : ""}\t` : ""}`,
+        `${param("l") ? `${Array.isArray(location[file]) ? "-a----" : "d-----"}\t` : ""}`,
+        `${param("l") ? `${Array.isArray(location[file]) ? location[file].length : ""}\t` : ""}`,
         file
       ].join(""));
       setConsoleScreen([ ...consoleScreen, { prefix, command: code, response }]);
@@ -87,8 +87,8 @@ export default function Terminal({ logic, tree }) {
   };
   const readFile = (file) => {
     const location = nav();
-    if (typeof location[file] === "string") {
-      setConsoleScreen([ ...consoleScreen, { prefix, command: code, response: [location[file]] }]);
+    if (Array.isArray(location[file])) {
+      setConsoleScreen([ ...consoleScreen, { prefix, command: code, response: location[file] }]);
       return;
     }
     const errorMessage = location[file] ? `"${file}" is not a file` : `"${file}" doesn't exist`;
@@ -106,7 +106,7 @@ export default function Terminal({ logic, tree }) {
     } else if (/^cd (\w+|\.\.|\/)*/gi.test(code)) {
       const param = code.substring(3, code.length).replace(/\s+/g, "");
       navigate(param);
-    } else if (/^ls(\w+|\.\.|\/)*/gi.test(code)) {
+    } else if (/^[ls|ll](\w+|\.\.|\/)*/gi.test(code)) {
       const param = code.substring(2, code.length).replace(/\s+/g, "");
       explore(param);
     } else if (/^cat (\w+|\.\.|\/)*/gi.test(code)) {

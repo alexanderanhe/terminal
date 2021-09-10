@@ -7,11 +7,16 @@ export default function App() {
   const tree = {
     "home": {
       "www": {
-        "about_me.txt": "Hola que hace"
+        "about_me.txt": [
+          "Hola que hace"
+        ]
       }
     },
     "root": {
-      "nobody.txt": ""
+      "nobody.txt": [
+        "Que buscas si no hay nada",
+        "Puto el que lo lea"
+      ]
     }
   };
 
