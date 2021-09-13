@@ -61,7 +61,6 @@ export default function Terminal({ logic, tree }) {
     const pieces = path.split("/").filter((p) => p);
     const realPath = pieces.slice(0, pieces.length - back);
     const location = nav(realPath.join("/"));
-    console.log('navigate', location, realPath);
     if (location) {
       const newPrefix = `${realPath.join("/")}${realPath.length ? "/" : ""}`;
       setPrefix(newPrefix);
@@ -114,8 +113,9 @@ export default function Terminal({ logic, tree }) {
       readFile(file);
     } else if (typeof logic === 'function'){
       const response = logic(code);
-      if (Array.isArray(response)) {
-        setConsoleScreen([ ...consoleScreen, { prefix, command: code, response }]);
+      if (Array.isArray(response) || typeof response === "string") {
+        const lines = Array.isArray(response) ? response : [response];
+        setConsoleScreen([ ...consoleScreen, { prefix, command: code, response: lines }]);
       } if (response === false) {
         setConsoleScreen([ ...consoleScreen, { prefix, command: code, error: true, response: [`Command "${code}" not found`] }]);
       }
@@ -130,7 +130,6 @@ export default function Terminal({ logic, tree }) {
     }
   };
   const handleKeyDown = (e) => {
-    // console.log(e.keyCode);
     if (e.keyCode === 8 && cursor > 0) {
       setCursor(0);
       setCode("");
