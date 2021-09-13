@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Terminal from './components/terminal'
+import { collection, getDocs } from '@firebase/firestore';
+import db from './firebase/firebaseConfig';
 import './App.css';
 
 export default function App() {
@@ -20,9 +22,7 @@ export default function App() {
   };
 
   const logic = (cmd) => {
-    if (cmd === "cmd") {
-      return [ "ls", "cat", "clear", "cd", "cmd" ];
-    } else if (cmd === "hello") {
+    if (cmd === "hello") {
       return [
         "───▄▄▄▄▄▄",
         "─▄▀░░░░░░▀▄░██░██ █████ ██░░ ██░░ █████",
@@ -78,6 +78,14 @@ export default function App() {
       return false;
     }
   }
+
+  useEffect(() => {
+    const getData = async() => {
+      const data = await getDocs(collection(db, 'users'));
+      console.log(data);
+    };
+    getData();
+  }, []);
   return (
     <Terminal logic={logic} tree={tree}/>
   );

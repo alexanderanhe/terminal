@@ -30,7 +30,7 @@ export default function Terminal({ logic, tree }) {
   const [cursor, setCursor] = useState(0);
   const [focus, setFocus] = useState(true);
   const [consoleScreen, setConsoleScreen] = useState([
-    {prefix: "", command: "Hey there! Typing cmd for help"}
+    {prefix: "", command: `Hey there! Typing "cmd" for help`}
   ]);
   const [prefix, setPrefix] = useState("");
 
@@ -101,9 +101,11 @@ export default function Terminal({ logic, tree }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!code) return;
-    if (code.toLowerCase() === "clear") {
+    if (code.toLowerCase().replace(/\s+/g, "") === "cmd") {
+      setConsoleScreen([ ...consoleScreen, { prefix, command: code, response: [ "ls", "cat", "clear", "cd", "cmd" ] }]);
+    } else if (code.toLowerCase().replace(/\s+/g, "") === "clear") {
       setConsoleScreen([]);
-    } else if (code.toLowerCase() === "reboot") {
+    } else if (code.toLowerCase().replace(/\s+/g, "") === "reboot") {
       window.location.reload();
     } else if (/^history(\d+)*/gi.test(code)) {
       const param = code.substring(8, code.length).replace(/\s+/g, "");
