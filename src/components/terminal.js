@@ -34,14 +34,14 @@ export default function Terminal({ logic, tree }) {
   ]);
   const [prefix, setPrefix] = useState("");
 
-  const nav = (path = "") => {
+  const nav = (path = "", files = false) => {
     const realPath = path ? path : prefix;
     let result = { ...tree };
     if (realPath) {
       try {
         realPath.split("/").forEach((dir) => {
           if (dir) {
-            if (typeof result[dir] === "object") {
+            if (typeof result[dir] === "object" && (Array.isArray(result[dir]) || !files)) {
               result = result[dir];
             } else {
               console.error(`The directory "${dir}" was not found`);
@@ -61,7 +61,7 @@ export default function Terminal({ logic, tree }) {
     const pieces = path.split("/").filter((p) => p);
     const realPath = pieces.slice(0, pieces.length - back);
     const location = nav(realPath.join("/"));
-    if (location) {
+    if (location && !Array.isArray(location) && typeof location !== "string") {
       const newPrefix = `${realPath.join("/")}${realPath.length ? "/" : ""}`;
       setPrefix(newPrefix);
       setConsoleScreen([ ...consoleScreen, { prefix: newPrefix, command: code, response: [] }]);
@@ -86,8 +86,9 @@ export default function Terminal({ logic, tree }) {
   };
   const readFile = (file) => {
     const location = nav();
-    if (Array.isArray(location[file])) {
-      setConsoleScreen([ ...consoleScreen, { prefix, command: code, response: location[file] }]);
+    if (Array.isArray(location[file]) || typeof location[file] === "string") {
+      const lines = Array.isArray(location[file]) ? location[file] : [location[file]];
+      setConsoleScreen([ ...consoleScreen, { prefix, command: code, response: lines }]);
       return;
     }
     const errorMessage = location[file] ? `"${file}" is not a file` : `"${file}" doesn't exist`;
@@ -102,6 +103,12 @@ export default function Terminal({ logic, tree }) {
     if (!code) return;
     if (code.toLowerCase() === "clear") {
       setConsoleScreen([]);
+    } else if (code.toLowerCase() === "reboot") {
+      window.location.reload();
+    } else if (/^history(\d+)*/gi.test(code)) {
+      const param = code.substring(8, code.length).replace(/\s+/g, "");
+      const count = param ? parseInt(param, 10) : history.length;
+      setConsoleScreen([ ...consoleScreen, { prefix, command: code, response: history.reverse().slice(0, count) }]);
     } else if (/^cd (\w+|\.\.|\/)*/gi.test(code)) {
       const param = code.substring(3, code.length).replace(/\s+/g, "");
       navigate(param);
@@ -129,10 +136,36 @@ export default function Terminal({ logic, tree }) {
       input.current.focus();
     }
   };
+  const help = (param) => {
+    const path = `${prefix}${param}`;
+    const pieces = path.split("/").filter((p) => p);
+    const realPath = pieces.slice(0, pieces.length - 1);
+    const location = nav(realPath.join("/"));
+    if (location) {
+      const suggestion = Object.keys(location).filter((l) => l.search(param.split("/").slice(-1).pop()) === 0);
+      if (suggestion.length === 1) {
+        const params = param.split("/");
+        const prePath = params.splice(0, params.length - 1).join("/");
+        const prediction = suggestion.shift();
+        return `${prePath}${prePath.length ? "/" : ""}${prediction}${Array.isArray(location[prediction]) || typeof location[prediction] === "string" ? "" : "/"}`;
+      }
+    }
+  };
   const handleKeyDown = (e) => {
-    if (e.keyCode === 8 && cursor > 0) {
+    if (e.keyCode === 8 && cursor) {
       setCursor(0);
       setCode("");
+    } else if (e.keyCode === 9 && !cursor) {
+      e.preventDefault();
+      if (/^cd (\w+|\/)*/gi.test(code)) {
+        const param = code.substring(3, code.length).replace(/\s+/g, "");
+        const suggestion = help(param);
+        setCode(`cd ${suggestion}`);
+      } else if (/^cat (\w+|\/)*/gi.test(code)) {
+        const param = code.substring(4, code.length).replace(/\s+/g, "");
+        const suggestion = help(param);
+        setCode(`cat ${suggestion}`);
+      }
     } else if ((e.keyCode === 9 || e.keyCode === 13) && cursor) {
       e.preventDefault();
       setCode(history[history.length - cursor] || "");
