@@ -14,14 +14,10 @@ export default function Home() {
 
 
   const logic = ({code: cmd}) => {
-    if (cmd === "hello") {
-      return getBasics()["hello"];
-    }  else if (cmd === "game") {
-      return getBasics()["game"];
-    } else if (cmd === "art") {
-      return getBasics()["art"];
-    } else if (cmd === "chat") {
-      return getBasics()["chat"];
+    console.log(cmd);
+    if (["hello", "game", "art", "chat"].indexOf(cmd) >= 0) {
+      const response = getBasics()[cmd];
+      dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response } });
     } else if (cmd === "google" || cmd === "auth") { 
       const signInGoogle = async () => {
         const provider = new GoogleAuthProvider();
@@ -36,7 +32,7 @@ export default function Home() {
             // The signed-in user info.
             const user = result.user;
             console.log(user);
-            dispatch({ type: "CONSOLESCREEN", command: cmd, response: [ user.displayName, user.email ] });
+            dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response: [ user.displayName, user.email ] } });
             // ...
           }).catch((error) => {
             // Handle Errors here.
@@ -47,7 +43,7 @@ export default function Home() {
             // The AuthCredential type that was used.
             const credential = GoogleAuthProvider.credentialFromError(error);
             // ...
-            dispatch({ type: "CONSOLESCREEN", command: cmd, error: true, response: [errorMessage] });
+            dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [errorMessage] } });
           });
       }
       signInGoogle();
@@ -56,9 +52,9 @@ export default function Home() {
         try {
           const data = await getDocs(collection(db, 'users'));
           const res = data.docs;
-          dispatch({ type: "CONSOLESCREEN", command: cmd, response: res.map((e) => e.data().name) });
+          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response: res.map((e) => e.data().name) } });
         } catch(err) {
-          dispatch({ type: "CONSOLESCREEN", command: cmd, error: true, response: [err.message] });
+          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [err.message] } });
         }
       };
       getData();
@@ -71,13 +67,13 @@ export default function Home() {
           const docRef = await addDoc(collection(db, "users"), {
             name,
           });
-          dispatch({ type: "CONSOLESCREEN", command: cmd, response: [ `Added user with reference ${docRef.id}` ] });
+          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response: [ `Added user with reference ${docRef.id}` ] } });
         } catch(err) {
-          dispatch({ type: "CONSOLESCREEN", command: cmd, error: true, response: [err.message] });
+          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [err.message] } });
         }
       })();
     } else {
-      return false;
+      dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [`Command "${cmd}" not found`] } });
     }
   }
 

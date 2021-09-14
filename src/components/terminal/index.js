@@ -44,7 +44,7 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
         setPrefix(output?.payload?.prefix || "");
         dispatch({...output});
       } else {
-        Login({code});
+        logic({ code });
       }
       setHistory([...history, code]);
     } else {
