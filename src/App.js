@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Terminal from './components/terminal'
 import { collection, getDocs } from '@firebase/firestore';
-import db from './firebase/firebaseConfig';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { db } from './firebase/firebaseConfig';
 import './App.css';
+import { addDoc } from 'firebase/firestore';
 
 export default function App() {
   const tree = {
@@ -20,6 +22,8 @@ export default function App() {
       ]
     }
   };
+
+  const [ messages , setMessages ] = useState(null);
 
   const logic = (cmd) => {
     if (cmd === "hello") {
@@ -74,19 +78,69 @@ export default function App() {
       "\n",
       "Pon tu nombre de usuario:"
       ];
+    } else if (cmd === "google" || cmd === "auth") { 
+      const signInGoogle = async () => {
+        const provider = new GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+        const auth = getAuth();
+        auth.languageCode = 'it';
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            const user = result.user;
+            console.log(user);
+            setMessages({ command: cmd, response: [ user.displayName, user.email ] });
+            // ...
+          }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            // ...
+            setMessages({ command: cmd, error: true, response: [errorMessage] });
+          });
+      }
+      signInGoogle();
+    } else if (cmd === "getData") {
+      const getData = async() => {
+        try {
+          const data = await getDocs(collection(db, 'users'));
+          const res = data.docs;
+          setMessages({ command: cmd, response: res.map((e) => e.data().name) });
+        } catch(err) {
+          setMessages({ command: cmd, error: true, response: [err.message] });
+        }
+      };
+      getData();
+    } else if (/^addUser (\w+|\/)*/gi.test(cmd)) {
+      const name = cmd.substring(8, cmd.length).replace(/\s+/g, "");
+      (async() => {
+        try {
+          var user = getAuth();
+          console.log(user.currentUser.uid);
+          const docRef = await addDoc(collection(db, "users"), {
+            name,
+          });
+          setMessages({ command: cmd, response: [ `Added user with reference ${docRef.id}` ] });
+        } catch(err) {
+          setMessages({ command: cmd, error: true, response: [err.message] });
+        }
+      })();
     } else {
       return false;
     }
   }
 
   useEffect(() => {
-    const getData = async() => {
-      const data = await getDocs(collection(db, 'users'));
-      console.log(data);
-    };
-    getData();
+    
   }, []);
   return (
-    <Terminal logic={logic} tree={tree}/>
+    <Terminal logic={logic} tree={tree} messages={messages}/>
   );
 }

@@ -22,7 +22,7 @@ function useLocalStorage(key, initialValue) {
   return [value, setValue];
 }
 
-export default function Terminal({ logic, tree }) {
+export default function Terminal({ logic, tree, messages }) {
   const input = useRef(null);
   const inputBox = useRef(null);
   const [code, setCode] = useState("");
@@ -198,7 +198,13 @@ export default function Terminal({ logic, tree }) {
         behavior: 'smooth'
       });
     }
-  }, [code])
+  }, [code]);
+
+  useEffect(() => {
+    if (messages) {
+      setConsoleScreen([ ...consoleScreen, { ...messages, prefix }]);
+    }
+  }, [ messages ]);
 
   return (
     <div className="terminal" onClick={handleFocus} ref={inputBox}>
@@ -206,12 +212,14 @@ export default function Terminal({ logic, tree }) {
         <>
         {consoleScreen.map((cmd, j) => (
           <Fragment key={`${cmd}-${j}`}>
-          <p className="prompt" data-prefix={`${cmd.prefix}> `}>{cmd.command}</p>
-          <ul className={`${cmd.error ? "error" : ""}`}>
-            {cmd.response && cmd.response?.map((line, i) => (
-              <li key={`${line}-${i}`} className="result">{line}</li>
-            ))}
-          </ul>
+            {cmd.command && (
+              <p className="prompt" data-prefix={`${cmd.prefix}> `}>{cmd.command}</p>
+            )}
+            <ul className={`${cmd.error ? "error" : ""}`}>
+              {cmd.response && cmd.response?.map((line, i) => (
+                <li key={`${line}-${i}`} className="result">{line}</li>
+              ))}
+            </ul>
           </Fragment>
         ))}
         </>
