@@ -1,6 +1,10 @@
+--root {
+  --text-color: #FFFFFF;
+}
 html, body {
   margin: 0;
   background: #000;
   width: 100%;
   height: 100vh;
+  color: var(--text-color);
 }
