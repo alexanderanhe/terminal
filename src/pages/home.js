@@ -13,7 +13,7 @@ export default function Home() {
   const [{ userTree }, dispatch] = useAppContext();
 
 
-  const logic = (cmd) => {
+  const logic = ({code: cmd}) => {
     if (cmd === "hello") {
       return getBasics()["hello"];
     }  else if (cmd === "game") {
