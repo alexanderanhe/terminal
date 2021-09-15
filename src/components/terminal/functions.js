@@ -72,7 +72,7 @@ const help = (param, prefix, userTree) => {
 
 export default function linuxBasic ({code, history, prefix, userTree}) {
   if (!code) return;
-  if (code.toLowerCase().replace(/\s+/g, "") === "cmd") {
+  if (userTree && code.toLowerCase().replace(/\s+/g, "") === "cmd") {
     return { type: "CONSOLESCREEN", payload: { prefix, command: code, response: [ "ls", "cat", "clear", "cd", "cmd" ] } };
   } else if (code.toLowerCase().replace(/\s+/g, "") === "exit") {
     return { type: "LOGOUT" };
@@ -85,15 +85,15 @@ export default function linuxBasic ({code, history, prefix, userTree}) {
     const param = code.substring(8, code.length).replace(/\s+/g, "");
     const count = param ? parseInt(param, 10) : history.length;
     return { type: "CONSOLESCREEN", payload: { prefix, command: code, response: history.reverse().slice(0, count) } };
-  } else if (/^cd (\w+|\.\.|\/)*/gi.test(code)) {
+  } else if (userTree && /^cd (\w+|\.\.|\/)*/gi.test(code)) {
     const param = code.substring(3, code.length).replace(/\s+/g, "");
     const payload = navigate(param, prefix, userTree);
     return { type: "CONSOLESCREEN", payload: {...payload, prefix, command: code} };
-  } else if (/^[ls|ll](\w+|\.\.|\/)*/gi.test(code)) {
+  } else if (userTree && /^[ls|ll](\w+|\.\.|\/)*/gi.test(code)) {
     const param = code.substring(2, code.length).replace(/\s+/g, "");
     const payload = explore(param, prefix, userTree);
     return { type: "CONSOLESCREEN", payload: {...payload, prefix, command: code} };
-  } else if (/^cat (\w+|\.\.|\/)*/gi.test(code)) {
+  } else if (userTree && /^cat (\w+|\.\.|\/)*/gi.test(code)) {
     const file = code.substring(4, code.length).replace(/\s+/g, "");
     const payload = readFile(file, prefix, userTree);
     return { type: "CONSOLESCREEN", payload: {...payload, prefix, command: code} };

@@ -35,21 +35,17 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { code } = tools;
-    if (userTree) {
-      if (!code) return;
-      const output = linuxBasic({
-        code, history, prefix, userTree
-      });
-      if (output) {
-        setPrefix(output?.payload?._prefix || prefix);
-        dispatch({...output});
-      } else {
-        logic({ code });
-      }
-      setHistory([...history, code]);
+    if (!code) return;
+    const output = linuxBasic({
+      code, history, prefix, userTree
+    });
+    if (output) {
+      setPrefix(output?.payload?._prefix || prefix);
+      dispatch({...output});
     } else {
       logic({ code });
     }
+    setHistory([...history, code]);
     setTools({
       ...tools,
       code: "",
