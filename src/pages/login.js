@@ -110,7 +110,6 @@ export default function Login() {
           .then((result) => {
             // This gives you a Google Access Token. You can use it to access the Google API.
             const credential = GoogleAuthProvider.credentialFromResult(result);
-            console.log(credential, result);
             // The signed-in user info.
             const {
               displayName,
@@ -140,10 +139,6 @@ export default function Login() {
             // eslint-disable-next-line no-unused-vars
             const { code: errorCode, message: errorMessage } = error;
             // The AuthCredential type that was used.
-            // eslint-disable-next-line no-unused-vars
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            console.log(credential);
-            // ...
             dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`${errorMessage}`] } });
           });
       })();

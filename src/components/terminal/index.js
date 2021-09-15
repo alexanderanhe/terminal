@@ -2,7 +2,6 @@ import React, { Fragment, useState, useRef, useEffect } from 'react';
 
 import { useAppContext } from '../../context/AppContext';
 import useLocalStorage from '../../hooks/localStorage';
-import Login from '../../pages/login';
 import linuxBasic, { linuxBasicKeyDown } from './functions';
 
 import './terminal.css';

@@ -1,4 +1,4 @@
-import Reac, { useEffect } from 'react';
+// import Reac, { useEffect } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import { useAppContext } from "./context/AppContext";

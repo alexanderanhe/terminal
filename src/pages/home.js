@@ -12,7 +12,6 @@ export default function Home() {
 
 
   const logic = ({code: cmd}) => {
-    console.log(cmd);
     if (["hello", "game", "art", "chat"].indexOf(cmd) >= 0) {
       const response = ascii[cmd];
       dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response } });
