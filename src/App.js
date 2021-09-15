@@ -1,4 +1,5 @@
 // import Reac, { useEffect } from 'react';
+import HttpsRedirect from 'react-https-redirect';
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import { useAppContext } from "./context/AppContext";
@@ -14,14 +15,16 @@ export default function App() {
   const ToHome = () => <Redirect to="/" />;
 
   return (
-    <BrowserRouter>
-      <Layout>
-        <Switch>
-          <Route exact path="/" component={uid ? Home : ToLogin} />
-          <Route exact path="/login" component={uid ? ToHome : Login} />
-          <Route component={uid ? ToHome : ToLogin} />
-        </Switch>
-      </Layout>
-    </BrowserRouter>
+    <HttpsRedirect>
+      <BrowserRouter>
+        <Layout>
+          <Switch>
+            <Route exact path="/" component={uid ? Home : ToLogin} />
+            <Route exact path="/login" component={uid ? ToHome : Login} />
+            <Route component={uid ? ToHome : ToLogin} />
+          </Switch>
+        </Layout>
+      </BrowserRouter>
+    </HttpsRedirect>
   );
 }
