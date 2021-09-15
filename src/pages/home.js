@@ -14,7 +14,7 @@ export default function Home() {
   const logic = ({code: cmd}) => {
     if (["hello", "game", "art", "chat"].indexOf(cmd) >= 0) {
       const response = ascii[cmd];
-      dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response } });
+      dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, block: true, response } });
     } else if (cmd === "getData") {
       const getData = async() => {
         try {

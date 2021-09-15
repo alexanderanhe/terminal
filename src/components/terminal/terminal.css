@@ -102,7 +102,7 @@
     left: 0;
   }
   50% {
-    left: calc(-0.4 * 100vw);
+    left: calc(-0.9 * 100vw);
   }
   100% {
     left: 0;    
@@ -113,7 +113,7 @@
     left: 0;
   }
   50% {
-    left: calc(-0.4 * 100vw);
+    left: calc(-0.9 * 100vw);
   }
   100% {
     left: 0;    
@@ -124,7 +124,7 @@
     left: 0;
   }
   50% {
-    left: calc(-0.4 * 100vw);
+    left: calc(-0.9 * 100vw);
   }
   100% {
     left: 0;    
@@ -140,7 +140,7 @@
   }
 }
 .terminal ul.block li.result {
-  white-space: nowrap;
+  white-space: pre;
 }
 .terminal ul.error li.result {
   color: var(--terminal-text-error, red);
