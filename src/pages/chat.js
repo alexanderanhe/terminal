@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useAppContext } from '../context/AppContext';
 import Terminal from '../components/terminal'
+import { SocketProvider, useSocket } from '../context/SocketContext';
 // import { db } from '../firebase/FirebaseConfig';
 
 const PROCESS = [
@@ -17,13 +18,14 @@ const PROCESS = [
 
 export default function Chat() {
   // eslint-disable-next-line no-unused-vars
-  const [{ user, ascii, lang }, dispatch] = useAppContext();
+  const [{ uid, user, ascii, lang }, dispatch] = useAppContext();
   const [prefix, setPrefix] = useState("");
   const [process, setProcess] = useState({
     type: null,
     step: 0,
     form: {}
   });
+  const socket = useSocket();
 
   const newRoom = () => Math.random().toString(36).slice(-8).toUpperCase();
 
@@ -39,12 +41,16 @@ export default function Chat() {
   const connect = (room) => {
     setPrefix(user.email);
     dispatch({ type: "CONSOLESCREEN", payload: {
-      response: ["Conected to server"]
+      response: [`Conected to room ${room}`]
     }});
   };
 
   const send = ({message}) => {
     // logic to send messages
+    socket?.emit("message", {
+      text: message,
+      user: user.email
+    });
     dispatch({ type: "CONSOLESCREEN", payload: {
       prefix: user.email,
       command: message
@@ -126,9 +132,24 @@ export default function Chat() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ process.type, process.step ]);
 
+  useEffect(() => {
+    if (socket == null) return
+
+    socket.on('receive', ({ text, sender}) => {
+      dispatch({ type: "CONSOLESCREEN", payload: {
+        prefix: sender,
+        command: text
+      }});
+    })
+    return () => socket.off('receive')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ socket ])
+
   return (
-    <div className="terminal-container">
-      <Terminal logic={handleSubmit} prefix={prefix} />
-    </div>
+    <SocketProvider id={uid}>
+      <div className="terminal-container">
+        <Terminal logic={handleSubmit} prefix={prefix} />
+      </div>
+    </SocketProvider>
   )
 }
