@@ -70,10 +70,10 @@ const help = (param, prefix, userTree) => {
   }
 };
 
-export default function linuxBasic ({code, history, prefix, userTree}) {
+export default function linuxBasic ({code, history, prefix, userTree, user}) {
   if (!code) return;
   if (userTree && code.toLowerCase().replace(/\s+/g, "") === "cmd") {
-    return { type: "CONSOLESCREEN", payload: { prefix, command: code, response: [ "ls", "cat", "clear", "cd", "cmd" ] } };
+    return { type: "CONSOLESCREEN", payload: { prefix, command: code, response: [ "ls", "cat", "clear", "cd", "cmd", "history", "whoami", "reboot", "exit" ] } };
   } else if (code.toLowerCase().replace(/\s+/g, "") === "exit") {
     return { type: "LOGOUT" };
   } else if (code.toLowerCase().replace(/\s+/g, "") === "clear") {
@@ -81,6 +81,8 @@ export default function linuxBasic ({code, history, prefix, userTree}) {
   } else if (code.toLowerCase().replace(/\s+/g, "") === "reboot") {
     window.location.reload();
     return {};
+  } else if (code.toLowerCase().replace(/\s+/g, "") === "whoami") {
+    return { type: "CONSOLESCREEN", payload: { prefix, command: code, response: [`${user.displayName} ${user.email}`] } };
   } else if (/^history(\d+)*/gi.test(code)) {
     const param = code.substring(8, code.length).replace(/\s+/g, "");
     const count = param ? parseInt(param, 10) : history.length;
@@ -89,7 +91,7 @@ export default function linuxBasic ({code, history, prefix, userTree}) {
     const param = code.substring(3, code.length).replace(/\s+/g, "");
     const payload = navigate(param, prefix, userTree);
     return { type: "CONSOLESCREEN", payload: {...payload, prefix, command: code} };
-  } else if (userTree && /^[ls|ll](\w+|\.\.|\/)*/gi.test(code)) {
+  } else if (userTree && /^ls(\w+|\.\.|\/)*/gi.test(code)) {
     const param = code.substring(2, code.length).replace(/\s+/g, "");
     const payload = explore(param, prefix, userTree);
     return { type: "CONSOLESCREEN", payload: {...payload, prefix, command: code} };
