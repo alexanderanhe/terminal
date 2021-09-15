@@ -6,6 +6,7 @@ import { useAppContext } from "./context/AppContext";
 import Layout from './components/layout';
 import Home from "./pages/home";
 import Login from './pages/login';
+import Chat from './pages/chat';
 
 import './App.css';
 
@@ -21,6 +22,7 @@ export default function App() {
           <Switch>
             <Route exact path="/" component={uid ? Home : ToLogin} />
             <Route exact path="/login" component={uid ? ToHome : Login} />
+            <Route exact path="/chat" component={uid ? Chat : ToLogin} />
             <Route component={uid ? ToHome : ToLogin} />
           </Switch>
         </Layout>

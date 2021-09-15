@@ -6,13 +6,13 @@ import { useAppContext } from '../context/AppContext';
 import Terminal from '../components/terminal'
 import { db } from '../firebase/FirebaseConfig';
 
-export default function Home() {
+export default function Home({ history }) {
   const [ prefix , setPrefix ] = useState("");
   const [{ userTree, ascii }, dispatch] = useAppContext();
 
 
   const logic = ({code: cmd}) => {
-    if (["hello", "game", "art", "chat"].indexOf(cmd) >= 0) {
+    if (["hello", "game", "art"].indexOf(cmd) >= 0) {
       const response = ascii[cmd];
       dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, block: true, response } });
     } else if (cmd === "getData") {
@@ -40,6 +40,8 @@ export default function Home() {
           dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [err.message] } });
         }
       })();
+    } else if (cmd.replace(/\s+/g, "") === "chat") {
+      history.push('/chat')
     } else {
       dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [`Command "${cmd}" not found`] } });
     }
