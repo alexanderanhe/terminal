@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 
 import { useAppContext } from '../context/AppContext';
 import Terminal from '../components/terminal';
@@ -41,7 +41,7 @@ export default function Login() {
 
   const handleSubmit = ({ code }) => {
     const { type, step } = process;
-    if (type === "email") {
+    if (["signInEmail", "registerEmail"].indexOf(type) !== -1) {
       const input = code.replace(/\s+/g, "");
       if (step < PROCESS.length - 1) {
         setProcess({
@@ -58,8 +58,8 @@ export default function Login() {
       } else {
         const { email, password } = process.form;
         const auth = getAuth();
-        createUserWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
+        const responseManage = (promise) => {
+          promise.then((userCredential) => {
             // Signed in
             const user = userCredential.user;
             console.log(user);
@@ -90,12 +90,27 @@ export default function Login() {
             console.log(credential);
             // ...
             dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`${errorMessage}`] } });
+            setProcess({ ...process, step: 0, form: {}});
           });
+        };
+        if (type === "signInEmail") {
+          responseManage(signInWithEmailAndPassword(auth, email, password));
+        } else if (type === "registerEmail") {
+          responseManage(createUserWithEmailAndPassword(auth, email, password));
+        }
       }
     } else if (code === "auth email") {
       setProcess({
         ...process,
-        type: "email"
+        type: "signInEmail"
+      });
+      dispatch({ type: "CONSOLESCREEN", payload: {
+        command: code
+      }});
+    } else if (code === "register") {
+      setProcess({
+        ...process,
+        type: "registerEmail"
       });
       dispatch({ type: "CONSOLESCREEN", payload: {
         command: code
@@ -172,7 +187,7 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    if (process.type && PROCESS[process.step]) {
+    if (["signInEmail", "registerEmail"].indexOf(process.type) !== -1 && PROCESS[process.step]) {
       dispatch({
         type: "CONSOLESCREEN",
         payload: {
