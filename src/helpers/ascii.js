@@ -1,4 +1,4 @@
-export default function getBasics() {
+export default function getASCII() {
   return {
     hello: [
       "───▄▄▄▄▄▄",

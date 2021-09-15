@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useReducer } from "react";
 import Reducer from "./reducer";
+import getASCII from "../helpers/ascii";
 
 const AppContext = createContext([[],() => {}]);
 
 export function AppContextProvider({ children }) {
-
+  const ascii = getASCII();
   const initialState = {
+    ascii,
     lang: "es",
     user: {},
     uid: null,

@@ -1,3 +1,9 @@
+:root {
+  --terminal-text-color: #1ff042;
+  --terminal-text-error: red;
+  --terminal-text-placeholder: gray;
+  --terminal-background-color: #000;
+}
 @-webkit-keyframes cursor-blink {
 	0% {
 		opacity: 0;
@@ -31,16 +37,10 @@
 		opacity: 0;
 	}
 }
-:root {
-  --text-color: #1ff042;
-  --text-error: red;
-  --text-placeholder: gray;
-  --bg-color: #000;
-}
 .terminal {
   position: relative;
-  background-color: var(--bg-color);
-  padding: calc(100%*0.05);
+  background-color: var(--terminal-background-color, #000000);
+  padding: calc(100% * 0.02) calc(100% * 0.05);
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -48,7 +48,7 @@
   overflow-x: hidden;
 }
 .terminal .prompt {
-  color: var(--text-color);
+  color: var(--terminal-text-color, #1ff042);
   display: block;
   font-family: AndaleMono, monospace;
   font-weight: 700;
@@ -67,7 +67,7 @@
   display: inline-block;
 }
 .terminal .new-output span {
-  color: var(--text-placeholder);
+  color: var(--text-placeholder, gray);
 }
 .terminal .new-output.active:after {
   display: inline-block;
@@ -75,7 +75,7 @@
   width: .75em;
   height: 1em;
   margin-left: 5px;
-  background: var(--text-color);
+  background: var(--terminal-text-color, #1ff042);
   box-shadow: 1px 1px 1px rgb(31 240 66 / 65%), -1px -1px 1px rgb(31 240 66 / 65%), 1px -1px 1px rgb(31 240 66 / 65%), -1px 1px 1px rgb(31 240 66 / 65%);
   -webkit-animation: cursor-blink 1.25s steps(1) infinite;
   animation: cursor-blink 1.25s steps(1) infinite;
@@ -86,9 +86,9 @@
   margin: 0;
 }
 .terminal ul li.result {
-  color: var(--text-color);
+  color: var(--terminal-text-color, #1ff042);
   display: block;
-  width: 90vh;
+  width: 100%;
   font-family: AndaleMono, monospace;
   font-size: .9em;
   letter-spacing: .15em;
@@ -97,10 +97,55 @@
   line-height: 1;
   margin: 0.3rem 0;
 }
-.terminal ul.error li.result {
-  color: var(--text-error);
+@-webkit-keyframes run {
+  0% {
+    left: 0;
+  }
+  50% {
+    left: calc(-0.4 * 100vw);
+  }
+  100% {
+    left: 0;    
+  }
 }
-.here {
+@-moz-keyframes run {
+  0% {
+    left: 0;
+  }
+  50% {
+    left: calc(-0.4 * 100vw);
+  }
+  100% {
+    left: 0;    
+  }
+}
+@keyframes run {
+  0% {
+    left: 0;
+  }
+  50% {
+    left: calc(-0.4 * 100vw);
+  }
+  100% {
+    left: 0;    
+  }
+}
+.terminal ul.block {
+  position: relative;
+}
+@media (max-width: 425px) {
+  .terminal ul.block {
+    -webkit-animation: run 5s linear infinite;
+    animation: run 5s linear infinite;
+  }
+}
+.terminal ul.block li.result {
+  white-space: nowrap;
+}
+.terminal ul.error li.result {
+  color: var(--terminal-text-error, red);
+}
+.terminal .here {
   position: fixed;
   left: 0;
   background-color: #000;

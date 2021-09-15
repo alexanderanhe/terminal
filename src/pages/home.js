@@ -1,52 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 
 import { useAppContext } from '../context/AppContext';
 import Terminal from '../components/terminal'
 import { db } from '../firebase/FirebaseConfig';
-import getBasics from "../helpers/basics";
-
 
 export default function Home() {
   const [ prefix , setPrefix ] = useState("");
-  const [{ userTree }, dispatch] = useAppContext();
+  const [{ userTree, ascii }, dispatch] = useAppContext();
 
 
   const logic = ({code: cmd}) => {
     console.log(cmd);
     if (["hello", "game", "art", "chat"].indexOf(cmd) >= 0) {
-      const response = getBasics()[cmd];
+      const response = ascii[cmd];
       dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response } });
-    } else if (cmd === "google" || cmd === "auth") { 
-      const signInGoogle = async () => {
-        const provider = new GoogleAuthProvider();
-        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-        const auth = getAuth();
-        auth.languageCode = 'it';
-        signInWithPopup(auth, provider)
-          .then((result) => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            // The signed-in user info.
-            const user = result.user;
-            console.log(user);
-            dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response: [ user.displayName, user.email ] } });
-            // ...
-          }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            // ...
-            dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [errorMessage] } });
-          });
-      }
-      signInGoogle();
     } else if (cmd === "getData") {
       const getData = async() => {
         try {
@@ -80,6 +49,8 @@ export default function Home() {
   useEffect(() => {}, []);
 
   return (
-    <Terminal logic={logic} userTree={userTree} prefix={prefix} setPrefix={setPrefix} />
+    <div className="terminal-container">
+      <Terminal logic={logic} userTree={userTree} prefix={prefix} setPrefix={setPrefix} />
+    </div>
   )
 }

@@ -41,7 +41,7 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
         code, history, prefix, userTree
       });
       if (output) {
-        setPrefix(output?.payload?.prefix || "");
+        setPrefix(output?.payload?._prefix || prefix);
         dispatch({...output});
       } else {
         logic({ code });
@@ -63,11 +63,13 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
   };
  
   const handleKeyDown = (event) => {
-    const { code, cursor} = tools;
-    const output = linuxBasicKeyDown({
-      event, code, cursor, history, prefix, userTree
-    });
-    setTools({ ...tools, ...output });
+    const { code, cursor } = tools;
+    if (userTree) {
+      const output = linuxBasicKeyDown({
+        event, code, cursor, history, prefix, userTree
+      });
+      setTools({ ...tools, ...output });
+    }
   }
 
   useEffect(() => {
@@ -97,7 +99,7 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
             {cmd.command && (
               <p className="prompt" data-prefix={`${cmd.prefix || ""}> `}>{cmd.command}</p>
             )}
-            <ul className={`${cmd.error ? "error" : ""}`}>
+            <ul className={`${cmd.error ? "error" : ""} ${cmd.block ? "block" : ""}`}>
               {cmd.response && cmd.response?.map((line, i) => (
                 <li key={`${line}-${i}`} className="result">{line}</li>
               ))}

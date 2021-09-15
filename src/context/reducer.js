@@ -12,7 +12,7 @@ export default function Reducer(state, action) {
         user,
         uid,
         userTree,
-        consoleScreen: [{prefix: "", command: "AUTHENTICATED" }]
+        consoleScreen: [{ response: state.ascii["hello"], block: true }]
       };
     // case "CHANGE_ONBOARDING":
     //   return {
@@ -44,7 +44,7 @@ export default function Reducer(state, action) {
         ...state,
         consoleScreen: [ ...state.consoleScreen, { ...action.payload }]
       };
-    case "CREARCONSOLESCREEN":
+    case "CLEARCONSOLESCREEN":
       return {
         ...state,
         consoleScreen: []

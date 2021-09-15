@@ -27,9 +27,9 @@ const navigate = (param, prefix, userTree) => {
   if (location && !Array.isArray(location) && typeof location !== "string") {
     const newPrefix = `${realPath.join("/")}${realPath.length ? "/" : ""}`;
     //1: setPrefix(newPrefix);
-    return { prefix: newPrefix, response: [] };
+    return { _prefix: newPrefix, response: [] };
   }
-  return { prefix, error: true, response: [`The directory "${param}" was not found`] };
+  return { error: true, response: [`The directory "${param}" was not found`] };
 };
 const explore = (parameters, prefix, userTree) => {
   const location = nav({ path: prefix, userTree });
@@ -41,18 +41,18 @@ const explore = (parameters, prefix, userTree) => {
       `${param("l") ? `${Array.isArray(location[file]) ? location[file].length : ""}\t` : ""}`,
       file
     ].join(""));
-    return { prefix, response };
+    return { response };
   }
-  return { prefix, error: true }; //2: , response: [`Command "${code}" not found`] };
+  return { error: true }; //2: , response: [`Command "${code}" not found`] };
 };
 const readFile = (file, prefix, userTree) => {
   const location = nav({ path: prefix, userTree});
   if (Array.isArray(location[file]) || typeof location[file] === "string") {
     const lines = Array.isArray(location[file]) ? location[file] : [location[file]];
-    return { prefix, response: lines };
+    return { response: lines };
   }
   const errorMessage = location[file] ? `"${file}" is not a file` : `"${file}" doesn't exist`;
-  return { prefix, error: true, response: [errorMessage] };
+  return { error: true, response: [errorMessage] };
 };
 const help = (param, prefix, userTree) => {
   const path = `${prefix}${param}`;
@@ -78,6 +78,7 @@ export default function linuxBasic ({code, history, prefix, userTree}) {
     return { type: "CLEARCONSOLESCREEN" };
   } else if (code.toLowerCase().replace(/\s+/g, "") === "reboot") {
     window.location.reload();
+    return {};
   } else if (/^history(\d+)*/gi.test(code)) {
     const param = code.substring(8, code.length).replace(/\s+/g, "");
     const count = param ? parseInt(param, 10) : history.length;
@@ -85,15 +86,15 @@ export default function linuxBasic ({code, history, prefix, userTree}) {
   } else if (/^cd (\w+|\.\.|\/)*/gi.test(code)) {
     const param = code.substring(3, code.length).replace(/\s+/g, "");
     const payload = navigate(param, prefix, userTree);
-    return { type: "CONSOLESCREEN", payload: {...payload, command: code} };
+    return { type: "CONSOLESCREEN", payload: {...payload, prefix, command: code} };
   } else if (/^[ls|ll](\w+|\.\.|\/)*/gi.test(code)) {
     const param = code.substring(2, code.length).replace(/\s+/g, "");
     const payload = explore(param, prefix, userTree);
-    return { type: "CONSOLESCREEN", payload: {...payload, command: code} };
+    return { type: "CONSOLESCREEN", payload: {...payload, prefix, command: code} };
   } else if (/^cat (\w+|\.\.|\/)*/gi.test(code)) {
     const file = code.substring(4, code.length).replace(/\s+/g, "");
     const payload = readFile(file, prefix, userTree);
-    return { type: "CONSOLESCREEN", payload: {...payload, command: code} };
+    return { type: "CONSOLESCREEN", payload: {...payload, prefix, command: code} };
   }
   return false;
 }
