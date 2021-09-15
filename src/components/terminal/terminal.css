@@ -61,7 +61,9 @@
 }
 .terminal .prompt:before {
   content: attr(data-prefix);
-  display: inline-block;
+  display: block;
+  width: 100%;
+  word-break: break-word;
 }
 .terminal .new-output {
   display: inline-block;

@@ -49,7 +49,6 @@ export default function Login() {
     const keys = PROCESS.map((process) => process.input);
     const formKeys = Object.keys(form).filter((field) => form[field]);
     const intersection = keys.filter((key) => formKeys.includes(key));
-    console.log("intersection", intersection, keys, formKeys);
     if (intersection.length === PROCESS.length) {
       // CONECTION TO CHAT
       callback(form);
