@@ -83,7 +83,7 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
         behavior: 'smooth'
       });
     }
-  }, [tools.code]);
+  }, [tools.code, consoleScreen]);
 
   return (
     <div className="terminal" onClick={handleFocus} ref={inputBox}>
