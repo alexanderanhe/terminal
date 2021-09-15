@@ -3,7 +3,6 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 import { useAppContext } from '../context/AppContext';
 import Terminal from '../components/terminal';
-import { SnapshotMetadata } from 'firebase/firestore';
 
 const PROCESS = [
   {
@@ -33,7 +32,7 @@ const TREESAMPLE = {
 };
 
 export default function Login() {
-  const [ { ascii }, dispatch ] = useAppContext();
+  const [ { ascii, lang }, dispatch ] = useAppContext();
   const [process, setProcess] = useState({
     type: null,
     step: 0,
@@ -61,12 +60,18 @@ export default function Login() {
         dispatch({
           type: "LOGIN",
           payload: {
-            user: { username, password },
+            user: { 
+              displayName: username,
+              email: username,
+              emailVerified: false,
+              isAnonymous: true,
+              photoURL: null,
+              createdAt: null
+            },
             uid: 123,
             userTree: TREESAMPLE
           }
         });
-        console.log("LOGIN SUBMITED");
       }
     } else if (code === "auth email") {
       setProcess({
@@ -81,11 +86,12 @@ export default function Login() {
         const provider = new GoogleAuthProvider();
         provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
         const auth = getAuth();
-        auth.languageCode = 'en';
+        auth.languageCode = lang;
         signInWithPopup(auth, provider)
           .then((result) => {
             // This gives you a Google Access Token. You can use it to access the Google API.
             const credential = GoogleAuthProvider.credentialFromResult(result);
+            console.log(credential, result);
             // The signed-in user info.
             const {
               displayName,
@@ -106,7 +112,7 @@ export default function Login() {
                   photoURL,
                   createdAt: metadata.createdAt
                 },
-                uid: credential.uid,
+                uid: credential.accessToken,
                 userTree: TREESAMPLE
               }
             });

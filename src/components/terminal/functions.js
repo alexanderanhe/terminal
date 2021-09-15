@@ -74,6 +74,8 @@ export default function linuxBasic ({code, history, prefix, userTree}) {
   if (!code) return;
   if (code.toLowerCase().replace(/\s+/g, "") === "cmd") {
     return { type: "CONSOLESCREEN", payload: { prefix, command: code, response: [ "ls", "cat", "clear", "cd", "cmd" ] } };
+  } else if (code.toLowerCase().replace(/\s+/g, "") === "exit") {
+    return { type: "LOGOUT" };
   } else if (code.toLowerCase().replace(/\s+/g, "") === "clear") {
     return { type: "CLEARCONSOLESCREEN" };
   } else if (code.toLowerCase().replace(/\s+/g, "") === "reboot") {
@@ -102,7 +104,7 @@ export default function linuxBasic ({code, history, prefix, userTree}) {
 export function linuxBasicKeyDown({ event, code, cursor, history, prefix, userTree }) {
   if (event.keyCode === 8 && cursor) {
     return { cursor: 0, code: "" };
-  } else if (event.keyCode === 9 && !cursor) {
+  } else if (event.keyCode === 9 && !cursor && userTree) {
     event.preventDefault();
     if (/^cd (\w+|\/)*/gi.test(code)) {
       const param = code.substring(3, code.length).replace(/\s+/g, "");

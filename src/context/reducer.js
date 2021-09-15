@@ -1,12 +1,12 @@
-const DEFAULT_IMAGE = "https://webservicesnt.org/apis/epasero/cosmetics/images/user_perfil.svg";
+import { PREFIX } from "../hooks/localStorage";
 
 export default function Reducer(state, action) {
   switch (action.type) {
     case "LOGIN":
       const { uid, user, userTree } = action.payload;
-      console.log(uid, user);
-      // JSON.stringify(defaultUser);
-      // localStorage.setItem("uid", act);
+      localStorage.setItem(`${PREFIX}user`, JSON.stringify(user));
+      localStorage.setItem(`${PREFIX}uid`, JSON.stringify(uid));
+      localStorage.setItem(`${PREFIX}userTree`, JSON.stringify(userTree));
       return {
         ...state,
         user,
@@ -14,26 +14,22 @@ export default function Reducer(state, action) {
         userTree,
         consoleScreen: [{ response: state.ascii["hello"], block: true }]
       };
-    // case "CHANGE_ONBOARDING":
-    //   return {
-    //     ...state,
-    //     onboarding: action.payload
-    //   };
-    // case "LOGOUT":
-    //   localStorage.removeItem("user");
-    //   localStorage.removeItem("sessionId");
-    //   return {
-    //     ...state,
-    //     user: {},
-    //     sessionId: null
-    //   };
-    // case "CHANGEIMAGE":
-    //   const newUser = { ...state.user, profileImage: `${action.payload}?${Math.floor(Math.random() * 100) + 1}` };
-    //   localStorage.setItem("user", JSON.stringify(newUser));
-    //   return {
-    //     ...state,
-    //     user: newUser
-    //   };
+    case "LOGOUT":
+      localStorage.removeItem(`${PREFIX}user`);
+      localStorage.removeItem(`${PREFIX}uid`);
+      localStorage.removeItem(`${PREFIX}userTree`);
+      return {
+        ...state,
+        user: {},
+        uid: null
+      };
+    case "CHANGE_LANGUAGE":
+      const langValidation = state.lang === "en" ? "es" : "en";
+      localStorage.setItem("lang", JSON.stringify(langValidation));
+      return {
+        ...state,
+        lang: langValidation
+      };
     case "UPDATEUSERTREE":
       return {
         ...state,

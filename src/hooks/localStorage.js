@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 
-const PREFIX = 'terminal-';
+export const PREFIX = 'terminal-';
 
 export default function useLocalStorage(key, initialValue) {
   const prefixedKey = PREFIX + key;
   const [value, setValue] = useState(() => {
     const jsonValue = localStorage.getItem(prefixedKey);
-    if (jsonValue != null) return JSON.parse(jsonValue)
+    console.log(jsonValue);
+    if (jsonValue != null) {
+      try {
+        return JSON.parse(jsonValue);
+      } catch(err) {
+        console.error(jsonValue, err.message);
+      }
+    }
     if (typeof initialValue === 'function') {
       return initialValue();
     } else {

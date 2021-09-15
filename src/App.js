@@ -12,6 +12,7 @@ export default function App() {
   const [{ uid }] = useAppContext();
   const ToLogin = () => <Redirect to="/login" />;
   const ToHome = () => <Redirect to="/" />;
+
   return (
     <BrowserRouter>
       <Layout>

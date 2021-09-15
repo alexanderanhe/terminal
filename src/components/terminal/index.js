@@ -64,12 +64,10 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
  
   const handleKeyDown = (event) => {
     const { code, cursor } = tools;
-    if (userTree) {
-      const output = linuxBasicKeyDown({
-        event, code, cursor, history, prefix, userTree
-      });
-      setTools({ ...tools, ...output });
-    }
+    const output = linuxBasicKeyDown({
+      event, code, cursor, history, prefix, userTree
+    });
+    setTools({ ...tools, ...output });
   }
 
   useEffect(() => {
