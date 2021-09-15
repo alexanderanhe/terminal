@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword } from "firebase/auth";
 
 import { useAppContext } from '../context/AppContext';
 import Terminal from '../components/terminal';
 
 const PROCESS = [
   {
-    output: ["Type your email/username:"],
-    input: "username"
+    output: ["Type your email:"],
+    input: "email"
   },
   {
     output: ["Type you password:"],
@@ -56,22 +56,41 @@ export default function Login() {
           command: input
         }});
       } else {
-        const { username, password } = process.form;
-        dispatch({
-          type: "LOGIN",
-          payload: {
-            user: { 
-              displayName: username,
-              email: username,
-              emailVerified: false,
-              isAnonymous: true,
-              photoURL: null,
-              createdAt: null
-            },
-            uid: 123,
-            userTree: TREESAMPLE
-          }
-        });
+        const { email, password } = process.form;
+        const auth = getAuth();
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            console.log(user);
+            // ...
+            dispatch({
+              type: "LOGIN",
+              payload: {
+                user: { 
+                  displayName: null,
+                  email,
+                  emailVerified: false,
+                  isAnonymous: true,
+                  photoURL: null,
+                  createdAt: null
+                },
+                uid: 123,
+                userTree: TREESAMPLE
+              }
+            });
+          })
+          .catch((error) => {
+            // Handle Errors here.
+            // eslint-disable-next-line no-unused-vars
+            const { code: errorCode, message: errorMessage } = error;
+            // The AuthCredential type that was used.
+            // eslint-disable-next-line no-unused-vars
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            console.log(credential);
+            // ...
+            dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`${errorMessage}`] } });
+          });
       }
     } else if (code === "auth email") {
       setProcess({
@@ -119,12 +138,13 @@ export default function Login() {
           }).catch((error) => {
             // Handle Errors here.
             // eslint-disable-next-line no-unused-vars
-            const { errorCode, errorMessage, email } = error.message;
+            const { code: errorCode, message: errorMessage } = error;
             // The AuthCredential type that was used.
             // eslint-disable-next-line no-unused-vars
             const credential = GoogleAuthProvider.credentialFromError(error);
+            console.log(credential);
             // ...
-            dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [errorMessage] } });
+            dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`${errorMessage}`] } });
           });
       })();
     } else {

@@ -8,7 +8,7 @@ import linuxBasic, { linuxBasicKeyDown } from './functions';
 import './terminal.css';
 
 export default function Terminal({ logic, prefix, setPrefix, userTree }) {
-  const [{ consoleScreen }, dispatch] = useAppContext();
+  const [{ consoleScreen, user }, dispatch] = useAppContext();
   const input = useRef(null);
   const inputBox = useRef(null);
   // const [code, setCode] = useState("");
@@ -37,10 +37,12 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
     const { code } = tools;
     if (!code) return;
     const output = linuxBasic({
-      code, history, prefix, userTree
+      code, history, prefix, userTree, user
     });
     if (output) {
-      setPrefix(output?.payload?._prefix || prefix);
+      if (setPrefix) {
+        setPrefix(output?.payload?._prefix || prefix);
+      }
       dispatch({...output});
     } else {
       logic({ code });
