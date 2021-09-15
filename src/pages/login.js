@@ -90,7 +90,7 @@ export default function Login() {
             console.log(credential);
             // ...
             dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`${errorMessage}`] } });
-            setProcess({ ...process, step: 0, form: {}});
+            setProcess({ ...process, type: null, step: 0, form: {}});
           });
         };
         if (type === "signInEmail") {
