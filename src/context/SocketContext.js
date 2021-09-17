@@ -8,7 +8,7 @@ export function useSocket() {
   return useContext(SocketContext)
 }
 
-export function SocketProvider({ id, children }) {
+export function SocketProvider({ children }) {
   const [socket, setSocket] = useState();
   // eslint-disable-next-line no-unused-vars
   const [{ uid, user }] = useAppContext();
@@ -38,10 +38,13 @@ export function SocketProvider({ id, children }) {
       const userJson = JSON.stringify({...user, textColor});
       const socketio  = io(
         process.env.REACT_APP_WEB_SOCKET || 'http://localhost:5000',
-        { query: {
-          id: uid,
-          user: userJson
-        } }
+        { 
+          query: {
+            id: uid,
+            user: userJson
+          },
+          transports: ["websocket", "polling"] 
+        }
       );
   
       socketio.on("connect", () => {
