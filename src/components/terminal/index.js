@@ -92,11 +92,11 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
         {consoleScreen?.map((cmd, j) => (
           <Fragment key={`${cmd}-${j}`}>
             {cmd.command && (
-              <p className="prompt" data-prefix={`${cmd.prefix || ""}> `}>{cmd.command}</p>
+              <p className="prompt" data-prefix={`${cmd.prefix || ""}> `} style={cmd.style}>{cmd.command}</p>
             )}
             <ul className={`${cmd.error ? "error" : ""} ${cmd.block ? "block" : ""}`}>
               {cmd.response && cmd.response?.map((line, i) => (
-                <li key={`${line}-${i}`} className="result">{line}</li>
+                <li key={`${line}-${i}`} style={cmd.style} className="result">{line}</li>
               ))}
             </ul>
           </Fragment>

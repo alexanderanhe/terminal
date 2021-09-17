@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 
 import { AppContextProvider } from './context/AppContext';
+import { SocketProvider } from './context/SocketContext';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
@@ -9,7 +10,9 @@ import './index.css';
 
 render(
   <AppContextProvider>
-    <App />
+    <SocketProvider>
+      <App />
+    </SocketProvider>
   </AppContextProvider>,
   document.getElementById('root')
 );

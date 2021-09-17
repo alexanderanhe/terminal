@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useAppContext } from '../context/AppContext';
 import Terminal from '../components/terminal'
-import { SocketProvider, useSocket } from '../context/SocketContext';
+import { useSocket } from '../context/SocketContext';
 // import { db } from '../firebase/FirebaseConfig';
 
 const PROCESS = [
@@ -27,7 +27,7 @@ export default function Chat() {
   });
   const socket = useSocket();
 
-  const newRoom = () => Math.random().toString(36).slice(-8).toUpperCase();
+  const newRoom = () => Math.random().toString(36).slice(-6).toUpperCase();
 
   const login = (form, callback) => {
     const keys = PROCESS.map((process) => process.input);
@@ -40,20 +40,23 @@ export default function Chat() {
 
   const connect = (room) => {
     setPrefix(user.email);
+    socket?.emit("joinRoom", room);
     dispatch({ type: "CONSOLESCREEN", payload: {
       response: [`Conected to room ${room}`]
     }});
   };
 
-  const send = ({message}) => {
+  const send = ({ message }) => {
     // logic to send messages
+    const { room } = process.form;
     socket?.emit("message", {
-      text: message,
-      user: user.email
+      message,
+      room
     });
     dispatch({ type: "CONSOLESCREEN", payload: {
       prefix: user.email,
-      command: message
+      command: message,
+      style: { color: "#FFFFFF" }
     }});
   }
 
@@ -117,6 +120,7 @@ export default function Chat() {
       response: ascii["chat"],
       block: true
     }});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -135,10 +139,12 @@ export default function Chat() {
   useEffect(() => {
     if (socket == null) return
 
-    socket.on('receive', ({ text, sender}) => {
+    socket.on('receive', ({ message, sender}) => {
+      const { displayName, email, textColor } = JSON.parse(sender);
       dispatch({ type: "CONSOLESCREEN", payload: {
-        prefix: sender,
-        command: text
+        prefix: displayName || email,
+        command: message,
+        style: { color: textColor || "#FFF" }
       }});
     })
     return () => socket.off('receive')
@@ -146,10 +152,8 @@ export default function Chat() {
   }, [ socket ])
 
   return (
-    <SocketProvider id={uid}>
-      <div className="terminal-container">
-        <Terminal logic={handleSubmit} prefix={prefix} />
-      </div>
-    </SocketProvider>
+    <div className="terminal-container">
+      <Terminal logic={handleSubmit} prefix={prefix} />
+    </div>
   )
 }
