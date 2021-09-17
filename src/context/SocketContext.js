@@ -43,7 +43,7 @@ export function SocketProvider({ children }) {
             id: uid,
             user: userJson
           },
-          transports: ["websocket", "polling"] 
+          // transports: ["websocket", "polling"]
         }
       );
   
