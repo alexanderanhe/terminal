@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 // import { getAuth } from "firebase/auth";
 // import { collection, getDocs, addDoc } from 'firebase/firestore';
 
@@ -40,15 +40,16 @@ export default function Chat({ history }) {
     }
   };
 
-  const connect = (room) => {
+  const connect = useCallback((room) => {
     setPrefix(user.email);
     socket?.emit("joinRoom", room);
     dispatch({ type: "CONSOLESCREEN", payload: {
       response: [`Conected to room ${room}`]
     }});
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ socket ]);
 
-  const send = ({ message }) => {
+  const send = useCallback(({ message }) => {
     // logic to send messages
     const { room } = process.form;
     socket?.emit("message", {
@@ -60,7 +61,8 @@ export default function Chat({ history }) {
       command: message,
       style: { color: "#FFFFFF" }
     }});
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ socket ]);
 
   const handleSubmit = ({ code }) => {
     const { step, form, type } = process;
