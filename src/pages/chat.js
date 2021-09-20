@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 // import { getAuth } from "firebase/auth";
 // import { collection, getDocs, addDoc } from 'firebase/firestore';
 
@@ -46,7 +46,6 @@ export default function Chat({ history }) {
     dispatch({ type: "CONSOLESCREEN", payload: {
       response: [`Conected to room ${room}`]
     }});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   const send = ({ message }) => {
@@ -61,7 +60,6 @@ export default function Chat({ history }) {
       command: message,
       style: { color: "#FFFFFF" }
     }});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   const handleSubmit = ({ code }) => {
