@@ -11,23 +11,25 @@ export default function Home({ history }) {
   const [{ userTree, ascii }, dispatch] = useAppContext();
 
 
-  const logic = ({code: cmd}) => {
-    if (["hello", "game", "art"].indexOf(cmd) >= 0) {
-      const response = ascii[cmd];
-      dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, block: true, response } });
-    } else if (cmd === "getData") {
+  const logic = ({ code }) => {
+    if (["hello", "game", "art"].indexOf(code) >= 0) {
+      const response = ascii[code];
+      dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: code, block: true, response } });
+    } else if (code.toLowerCase().replace(/\s+/g, "") === "exit") {
+      return { type: "LOGOUT" };
+    } else if (code === "getData") {
       const getData = async() => {
         try {
           const data = await getDocs(collection(db, 'users'));
           const res = data.docs;
-          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response: res.map((e) => e.data().name) } });
+          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: code, response: res.map((e) => e.data().name) } });
         } catch(err) {
-          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [err.message] } });
+          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: code, error: true, response: [err.message] } });
         }
       };
       getData();
-    } else if (/^addUser (\w+|\/)*/gi.test(cmd)) {
-      const name = cmd.substring(8, cmd.length).replace(/\s+/g, "");
+    } else if (/^addUser (\w+|\/)*/gi.test(code)) {
+      const name = code.substring(8, code.length).replace(/\s+/g, "");
       (async() => {
         try {
           var user = getAuth();
@@ -35,23 +37,22 @@ export default function Home({ history }) {
           const docRef = await addDoc(collection(db, "users"), {
             name,
           });
-          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, response: [ `Added user with reference ${docRef.id}` ] } });
+          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: code, response: [ `Added user with reference ${docRef.id}` ] } });
         } catch(err) {
-          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [err.message] } });
+          dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: code, error: true, response: [err.message] } });
         }
       })();
-    } else if (cmd.replace(/\s+/g, "") === "chat") {
-      history.push('/chat')
+    } else if (/^chat([0-9a-zA-Z]+)*/gi.test(code)) {
+      const room = code.substring(4, code.length).replace(/\s+/g, "");
+      history.push(`/chat/${room}`);
     } else {
-      dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: cmd, error: true, response: [`Command "${cmd}" not found`] } });
+      dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: code, error: true, response: [`Command "${code}" not found`] } });
     }
   }
 
   useEffect(() => {}, []);
 
   return (
-    <div className="terminal-container">
-      <Terminal logic={logic} userTree={userTree} prefix={prefix} setPrefix={setPrefix} />
-    </div>
+    <Terminal logic={logic} userTree={userTree} prefix={prefix} setPrefix={setPrefix} />
   )
 }

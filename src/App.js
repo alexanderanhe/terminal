@@ -22,6 +22,7 @@ export default function App() {
           <Switch>
             <Route exact path="/" component={uid ? Home : ToLogin} />
             <Route exact path="/login" component={uid ? ToHome : Login} />
+            <Route exact path="/chat/:room" component={uid ? Chat : ToLogin} />
             <Route exact path="/chat" component={uid ? Chat : ToLogin} />
             <Route component={uid ? ToHome : ToLogin} />
           </Switch>

@@ -74,8 +74,6 @@ export default function linuxBasic ({code, history, prefix, userTree, user}) {
   if (!code) return;
   if (userTree && code.toLowerCase().replace(/\s+/g, "") === "cmd") {
     return { type: "CONSOLESCREEN", payload: { prefix, command: code, response: [ "ls", "cat", "clear", "cd", "cmd", "history", "whoami", "reboot", "exit" ] } };
-  } else if (code.toLowerCase().replace(/\s+/g, "") === "exit") {
-    return { type: "LOGOUT" };
   } else if (code.toLowerCase().replace(/\s+/g, "") === "clear") {
     return { type: "CLEARCONSOLESCREEN" };
   } else if (code.toLowerCase().replace(/\s+/g, "") === "reboot") {

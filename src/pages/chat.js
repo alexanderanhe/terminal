@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import Terminal from '../components/terminal'
 import { useSocket } from '../context/SocketContext';
+import { useParams } from 'react-router';
 // import { db } from '../firebase/FirebaseConfig';
 
 const PROCESS = [
@@ -16,16 +17,17 @@ const PROCESS = [
 ];
 
 
-export default function Chat() {
+export default function Chat({ history }) {
   // eslint-disable-next-line no-unused-vars
   const [{ uid, user, ascii, lang }, dispatch] = useAppContext();
-  const [prefix, setPrefix] = useState("");
+  const [prefix, setPrefix] = useState("chat");
   const [process, setProcess] = useState({
     type: null,
     step: 0,
     form: {}
   });
   const socket = useSocket();
+  const { room } = useParams();
 
   const newRoom = () => Math.random().toString(36).slice(-6).toUpperCase();
 
@@ -62,7 +64,10 @@ export default function Chat() {
 
   const handleSubmit = ({ code }) => {
     const { step, form, type } = process;
-    if (form.room) {
+    if (code.toLowerCase().replace(/\s+/g, "") === "exit") {
+      dispatch({ type: "CLEARCONSOLESCREEN" });
+      history.push('/');
+    } else if (form.room) {
       send({
         message: code
       })
@@ -100,16 +105,7 @@ export default function Chat() {
         type: "join"
       });
     } else if (code === "new") {
-      const nRoom = newRoom();
-      setProcess({
-        ...process,
-        type: "new",
-        form: {
-          ...process.form,
-          room: nRoom
-        }
-      });
-      connect(nRoom);
+      history.push(`/chat/${newRoom()}`);
     } else {
       dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`Command "${code}" not found`] } });
     }
@@ -122,6 +118,27 @@ export default function Chat() {
     }});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (room === "new") {
+      history.push(`/chat/${newRoom()}`);
+    } if (/^[A-Za-z0-9]{6}$/i.test(room)) {
+      const newForm = {
+        ...process.form,
+        room: room.toUpperCase()
+      };
+      setProcess({
+        ...process,
+        type: "connect",
+        form: newForm
+      });
+      login(newForm, (data) => {
+        const { room } = data;
+        connect(room);
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [room])
 
   useEffect(() => {
     if (process.type === "join" && PROCESS[process.step]) {
@@ -152,8 +169,6 @@ export default function Chat() {
   }, [ socket ])
 
   return (
-    <div className="terminal-container">
-      <Terminal logic={handleSubmit} prefix={prefix} />
-    </div>
+    <Terminal logic={handleSubmit} prefix={prefix} />
   )
 }

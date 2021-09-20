@@ -227,8 +227,6 @@ export default function Login() {
   }, [ process.type, process.step ]);
 
   return (
-    <div className="terminal-container">
-      <Terminal logic={handleSubmit}/>
-    </div>
+    <Terminal logic={handleSubmit}/>
   )
 }
