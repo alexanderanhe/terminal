@@ -171,9 +171,10 @@ export default function Chat({ history }) {
 
     socket.on("history", (messages) => {
       if (messages) {
-        // const payload = messages.map(({ message, sender}) => messageFormat({ message, sender}));
-        // dispatch({ type: "CONSOLESCREEN", payload });
-        console.log("Catch history", messages);
+        const messageArr = JSON.parse(messages);
+        const payload = messageArr.map(({ message, sender}) => messageFormat({ message, sender}));
+        dispatch({ type: "CONSOLESCREEN", payload });
+        console.log("Catch history", messageArr);
       }
     });
     return () => {
