@@ -156,17 +156,27 @@ export default function Chat({ history }) {
   useEffect(() => {
     if (socket == null) return
 
-    socket.on('receive', ({ message, sender}) => {
+    socket.on("receive", ({ message, sender}) => {
       const { displayName, email, textColor } = JSON.parse(sender);
       dispatch({ type: "CONSOLESCREEN", payload: {
         prefix: displayName || email,
         command: message,
         style: { color: textColor || "#FFF" }
       }});
-    })
-    return () => socket.off('receive')
+    });
+
+    socket.on("history", (messages) => {
+      if (messages) {
+        dispatch({ type: "CONSOLESCREEN", payload: messages});
+        console.log("Catch history", messages);
+      }
+    });
+    return () => {
+      socket.off("receive");
+      socket.off("history");
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ socket ])
+  }, [ socket ]);
 
   return (
     <Terminal logic={handleSubmit} prefix={prefix} />

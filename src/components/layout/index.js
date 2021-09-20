@@ -29,7 +29,7 @@ export default function Layout({ children }) {
     <div className={`layout${!uid ? " layout--auth" : ""}`}>
       <Header auth={!uid} />
       <main className="layout__content">
-        <div className="terminal-container" style={{height: `calc(${windowSize.height}px - var(--header-height))`}}>
+        <div className="terminal-container" data-termheight={windowSize.height}>
           {children}
         </div>
       </main>

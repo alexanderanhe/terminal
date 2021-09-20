@@ -31,10 +31,12 @@ html, body {
 }
 .terminal-container {
   width: 100%;
+  max-height: calc(100vh - var(--header-height));
 }
 @media (max-width: 425px) {
   .terminal-container {
-    height: calc(100vh/2 - var(--header-height));
+    height: calc(attr(data-termheight)px - var(--header-height));
+    max-height: calc(100vh/2 - var(--header-height));
   }
 }
 .footer {

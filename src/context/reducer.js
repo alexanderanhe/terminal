@@ -36,9 +36,11 @@ export default function Reducer(state, action) {
         userTree: action.payload
       };
     case "CONSOLESCREEN":
+      const newConsoleScreen = Array.isArray(action.payload) ? [...action.payload] :
+        [{ ...action.payload }];
       return {
         ...state,
-        consoleScreen: [ ...state.consoleScreen, { ...action.payload }]
+        consoleScreen: [ ...state.consoleScreen, ...newConsoleScreen ]
       };
     case "CLEARCONSOLESCREEN":
       return {
