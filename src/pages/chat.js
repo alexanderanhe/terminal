@@ -40,16 +40,16 @@ export default function Chat({ history }) {
     }
   };
 
-  const connect = useCallback((room) => {
+  const connect = (room) => {
     setPrefix(user.email);
     socket?.emit("joinRoom", room);
     dispatch({ type: "CONSOLESCREEN", payload: {
       response: [`Conected to room ${room}`]
     }});
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ socket ]);
+  };
 
-  const send = useCallback(({ message }) => {
+  const send = ({ message }) => {
     // logic to send messages
     const { room } = process.form;
     socket?.emit("message", {
@@ -62,7 +62,7 @@ export default function Chat({ history }) {
       style: { color: "#FFFFFF" }
     }});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ socket ]);
+  };
 
   const handleSubmit = ({ code }) => {
     const { step, form, type } = process;
