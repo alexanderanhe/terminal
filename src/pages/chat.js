@@ -176,7 +176,6 @@ export default function Chat({ history }) {
         const messageArr = JSON.parse(messages);
         const payload = messageArr.map(({ message, sender}) => messageFormat({ message, sender}));
         dispatch({ type: "CONSOLESCREEN", payload });
-        console.log("Catch history", messageArr);
       }
     });
     return () => {
