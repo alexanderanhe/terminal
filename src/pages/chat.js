@@ -166,7 +166,6 @@ export default function Chat({ history }) {
     };
 
     socket.on("receive", ({ message, sender}) => {
-      const { displayName, email, textColor } = JSON.parse(sender);
       dispatch({ type: "CONSOLESCREEN", payload: messageFormat({message, sender})});
     });
 
