@@ -156,22 +156,24 @@ export default function Chat({ history }) {
   useEffect(() => {
     if (socket == null) return
 
-    socket.on("receive", ({ message, sender}) => {
+    const messageFormat = ({ message, sender}) => {
       const { displayName, email, textColor } = JSON.parse(sender);
-      dispatch({ type: "CONSOLESCREEN", payload: {
+      return {
         prefix: displayName || email,
         command: message,
         style: { color: textColor || "#FFF" }
-      }});
+      };
+    };
+
+    socket.on("receive", ({ message, sender}) => {
+      const { displayName, email, textColor } = JSON.parse(sender);
+      dispatch({ type: "CONSOLESCREEN", payload: messageFormat({message, sender})});
     });
 
     socket.on("history", (messages) => {
       if (messages) {
-        dispatch({ type: "CONSOLESCREEN", payload: messages.map((message) => ({
-          prefix: message.displayName || message.email,
-          command: message.message,
-          style: { color: message.textColor || "#FFF" }
-        }))});
+        const payload = messages.map(({ message, sender}) => messageFormat({ message, sender}));
+        dispatch({ type: "CONSOLESCREEN", payload });
         console.log("Catch history", messages);
       }
     });
