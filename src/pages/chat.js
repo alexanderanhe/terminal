@@ -167,7 +167,11 @@ export default function Chat({ history }) {
 
     socket.on("history", (messages) => {
       if (messages) {
-        dispatch({ type: "CONSOLESCREEN", payload: messages});
+        dispatch({ type: "CONSOLESCREEN", payload: messages.map((message) => ({
+          prefix: message.displayName || message.email,
+          command: message.message,
+          style: { color: message.textColor || "#FFF" }
+        }))});
         console.log("Catch history", messages);
       }
     });
