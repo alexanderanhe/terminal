@@ -15,7 +15,7 @@ export default function Home({ history }) {
     if (["hello", "game", "art"].indexOf(code) >= 0) {
       const response = ascii[code];
       dispatch({ type: "CONSOLESCREEN", payload: { prefix, command: code, block: true, response } });
-    } else if (code.toLowerCase().replace(/\s+/g, "") === "exit") {
+    } else if (code.toLowerCase().replace(/\s+/g, "") === "logout") {
       return { type: "LOGOUT" };
     } else if (code === "getData") {
       const getData = async() => {

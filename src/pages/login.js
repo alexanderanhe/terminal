@@ -77,6 +77,7 @@ export default function Login() {
             const { email, password } = data;
             console.log(email, password);
             const auth = getAuth();
+            dispatch({ type: "LOADER", payload: "Loading" });
             const responseManage = (promise) => {
               promise.then((userCredential) => {
                 // Signed in
@@ -98,6 +99,7 @@ export default function Login() {
                     userTree: TREESAMPLE
                   }
                 });
+                dispatch({ type: "LOADER", payload: false });
               })
               .catch((error) => {
                 // Handle Errors here.
@@ -110,6 +112,7 @@ export default function Login() {
                 // ...
                 dispatch({ type: "CONSOLESCREEN", payload: { command: "", error: true, response: [`${errorMessage}`] } });
                 setProcess({ ...process, type: null, step: 0, form: {}});
+                dispatch({ type: "LOADER", payload: false });
               });
             };
             if (type === "signInEmail") {
@@ -148,6 +151,7 @@ export default function Login() {
         provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
         const auth = getAuth();
         auth.languageCode = lang;
+        dispatch({ type: "LOADER", payload: "Loading" });
         signInWithPopup(auth, provider)
           .then((result) => {
             // This gives you a Google Access Token. You can use it to access the Google API.
@@ -176,12 +180,14 @@ export default function Login() {
                 userTree: TREESAMPLE
               }
             });
+            dispatch({ type: "LOADER", payload: false });
           }).catch((error) => {
             // Handle Errors here.
             // eslint-disable-next-line no-unused-vars
             const { code: errorCode, message: errorMessage } = error;
             // The AuthCredential type that was used.
             dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`${errorMessage}`] } });
+            dispatch({ type: "LOADER", payload: false });
           });
       })();
     } else {

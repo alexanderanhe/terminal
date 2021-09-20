@@ -3,11 +3,12 @@ import React, { Fragment, useState, useRef, useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import useLocalStorage from '../../hooks/localStorage';
 import linuxBasic, { linuxBasicKeyDown } from './functions';
+import Loader from "./loader";
 
 import './terminal.css';
 
 export default function Terminal({ logic, prefix, setPrefix, userTree }) {
-  const [{ consoleScreen, user }, dispatch] = useAppContext();
+  const [{ consoleScreen, user, isLoading }, dispatch] = useAppContext();
   const input = useRef(null);
   const inputBox = useRef(null);
   // const [code, setCode] = useState("");
@@ -86,37 +87,40 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
   }, [tools.code, consoleScreen]);
 
   return (
-    <div className="terminal" onClick={handleFocus} ref={inputBox}>
-      <form onSubmit={handleSubmit}>
-        <>
-        {consoleScreen?.map((cmd, j) => (
-          <Fragment key={`${cmd}-${j}`}>
-            {cmd.command && (
-              <p className="prompt" data-prefix={`${cmd.prefix || ""}> `} style={cmd.style}>{cmd.command}</p>
-            )}
-            <ul className={`${cmd.error ? "error" : ""} ${cmd.block ? "block" : ""}`}>
-              {cmd.response && cmd.response?.map((line, i) => (
-                <li key={`${line}-${i}`} style={cmd.style} className="result">{line}</li>
-              ))}
-            </ul>
-          </Fragment>
-        ))}
-        </>
-        <p className={"prompt output new-output" + (tools.focus ? " active" : "")}  data-prefix={`${prefix || ""}> `}>
-          <input
-            type="text"
-            className="here"
-            ref={input}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onBlur={() => setTools({ ...tools, focus: false })}
-            onFocus={() => setTools({ ...tools, focus: true })}
-            value={tools.code}
-          />
-          <span>{history[history.length - tools.cursor] || ""}</span>
-          {tools.code}
-        </p>
-      </form>
-    </div>
+    <>
+      { isLoading && <Loader message={isLoading} /> }
+      <div className="terminal" onClick={handleFocus} ref={inputBox}>
+        <form onSubmit={handleSubmit}>
+          <>
+          {consoleScreen?.map((cmd, j) => (
+            <Fragment key={`${cmd}-${j}`}>
+              {cmd.command && (
+                <p className="prompt" data-prefix={`${cmd.prefix || ""}> `} style={cmd.style}>{cmd.command}</p>
+              )}
+              <ul className={`${cmd.error ? "error" : ""} ${cmd.block ? "block" : ""}`}>
+                {cmd.response && cmd.response?.map((line, i) => (
+                  <li key={`${line}-${i}`} style={cmd.style} className="result">{line}</li>
+                ))}
+              </ul>
+            </Fragment>
+          ))}
+          </>
+          <p className={"prompt output new-output" + (tools.focus ? " active" : "")}  data-prefix={`${prefix || ""}> `}>
+            <input
+              type="text"
+              className="here"
+              ref={input}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              onBlur={() => setTools({ ...tools, focus: false })}
+              onFocus={() => setTools({ ...tools, focus: true })}
+              value={tools.code}
+            />
+            <span>{history[history.length - tools.cursor] || ""}</span>
+            {tools.code}
+          </p>
+        </form>
+      </div>
+    </>
   );
 }

@@ -157,3 +157,52 @@
   cursor: none;
   z-index: -1;
 }
+
+.loader {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .6);
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+.loader__spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 20px;
+}
+.loader__spinner:after {
+  content: " ";
+  display: block;
+  width: 16px;
+  height: 32px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid var(--terminal-text-color);
+  border-color: var(--terminal-text-color) transparent var(--terminal-text-color) transparent;
+  animation: loader-animation 1.2s linear infinite;
+}
+.loader__text {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1rem;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0.05em;
+  color: var(--terminal-text-color);
+}
+
+@keyframes loader-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

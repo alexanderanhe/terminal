@@ -47,6 +47,11 @@ export default function Reducer(state, action) {
         ...state,
         consoleScreen: []
       };
+    case "LOADER":
+      return {
+        ...state,
+        isLoading: action.payload
+      };
     default:
       return state;
   }
