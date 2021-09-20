@@ -42,7 +42,6 @@ export default function Chat({ history }) {
 
   const connect = (room) => {
     setPrefix(user.email);
-    socket?.emit("joinRoom", room);
     dispatch({ type: "CONSOLESCREEN", payload: {
       response: [`Conected to room ${room}`]
     }});
@@ -138,7 +137,12 @@ export default function Chat({ history }) {
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [room])
+  }, [room]);
+
+  useEffect(() => {
+    if (socket == null || !process.form.room) return;
+    socket.emit("joinRoom", process.form.room);
+  }, [ socket, process.form.room ])
 
   useEffect(() => {
     if (process.type === "join" && PROCESS[process.step]) {
