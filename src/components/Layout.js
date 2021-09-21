@@ -13,7 +13,6 @@ export default function Layout({ children }) {
       height: window.innerHeight
   });
 
-
   useEffect(() => {
     const handleResize = () => setWindowSize({
       width: window.innerWidth,
