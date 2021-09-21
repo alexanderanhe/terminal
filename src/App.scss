@@ -1,6 +1,6 @@
 :root {
-  --header-height: 2rem;
-  --footer-height: var(--header-height);
+  --header-height: 1.5rem;
+  --footer-height: 2rem;
 }
 :root[data-theme="theme-clasic"] {
   --footer-background: #1f7acc;
@@ -21,16 +21,18 @@
   box-sizing: border-box;
   width: 100%;
   height: var(--header-height);
-}
-.header__content {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  margin: 0 auto;
-  max-width: 1700px;
-  height: 100%;
-  padding: 0 calc(100% * 0.05);
-  width: 100%;
+  background-color: #252525;
+  border-radius: 0.3rem;
+  &__content {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 1700px;
+    height: 100%;
+    padding: 0 calc(100% * 0.05);
+    width: 100%;
+  }
 }
 .terminal-container {
   width: 100%;
