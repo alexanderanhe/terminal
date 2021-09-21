@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 // import { collection, getDocs, addDoc } from 'firebase/firestore';
 
 import { useAppContext } from '../context/AppContext';
-import Terminal from '../components/terminal'
+import Terminal from '../components/terminal/Terminal'
 import { useSocket } from '../context/SocketContext';
 import { useParams } from 'react-router';
 // import { db } from '../firebase/FirebaseConfig';

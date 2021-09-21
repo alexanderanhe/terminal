@@ -2,10 +2,16 @@ import React, { Fragment, useState, useRef, useEffect } from 'react';
 
 import { useAppContext } from '../../context/AppContext';
 import useLocalStorage from '../../hooks/localStorage';
-import linuxBasic, { linuxBasicKeyDown } from './functions';
-import Loader from "./loader";
+import linuxBasic, { linuxBasicKeyDown } from './Terminal.functions';
 
-import './terminal.css';
+import './Terminal.scss';
+
+const Loader = ({ message }) => (
+  <div className="loader">
+    <div className="loader__spinner" />
+    <p className="loader__text">{message}</p>
+  </div>
+);
 
 export default function Terminal({ logic, prefix, setPrefix, userTree }) {
   const [{ consoleScreen, user, isLoading }, dispatch] = useAppContext();
@@ -108,7 +114,7 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
           <p className={"prompt output new-output" + (tools.focus ? " active" : "")}  data-prefix={`${prefix || ""}> `}>
             <input
               type="text"
-              className="here"
+              className="invisible"
               ref={input}
               onChange={handleChange}
               onKeyDown={handleKeyDown}

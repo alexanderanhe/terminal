@@ -81,7 +81,11 @@ export default function linuxBasic ({code, history, prefix, userTree, user}) {
     return {};
   } else if (code.toLowerCase().replace(/\s+/g, "") === "whoami") {
     return { type: "CONSOLESCREEN", payload: { prefix, command: code, response: [`${user?.email || ""}`] } };
-  } else if (/^history(\d+)*/gi.test(code)) {
+  } else if (/^theme(\w+)*/gi.test(code)) {
+    // const param = code.substring(5, code.length).replace(/\s+/g, "");
+    // const theme = param ? parseInt(param, 10) : history.length;
+    return { type: "CHANGE_THEME" };
+  }  else if (/^history(\d+)*/gi.test(code)) {
     const param = code.substring(8, code.length).replace(/\s+/g, "");
     const count = param ? parseInt(param, 10) : history.length;
     return { type: "CONSOLESCREEN", payload: { prefix, command: code, response: history.reverse().slice(0, count) } };

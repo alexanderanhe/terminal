@@ -10,8 +10,10 @@ export function AppContextProvider({ children }) {
   const [ user ] = useLocalStorage("user", {});
   const [ uid ] = useLocalStorage("uid", null);
   const [ lang ] = useLocalStorage("lang", "es");
-  const [ userTree ] = useLocalStorage("userTree", "es");
+  const [ theme ] = useLocalStorage("theme", "clasic");
+  const [ userTree ] = useLocalStorage("userTree", {});
   const initialState = {
+    theme,
     ascii,
     lang,
     user,

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 
 import { useAppContext } from '../context/AppContext';
-import Terminal from '../components/terminal';
+import Terminal from '../components/terminal/Terminal';
 
 const PROCESS = [
   {
@@ -79,23 +79,15 @@ export default function Login() {
             const auth = getAuth();
             dispatch({ type: "LOADER", payload: "Loading" });
             const responseManage = (promise) => {
-              promise.then((userCredential) => {
+              promise.then((result) => {
                 // Signed in
-                const user = userCredential.user;
-                console.log(user);
-                // ...
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                setProcess({ ...process, type: null, step: 0, newForm: {} });
                 dispatch({
                   type: "LOGIN",
                   payload: {
-                    user: { 
-                      displayName: null,
-                      email,
-                      emailVerified: false,
-                      isAnonymous: true,
-                      photoURL: null,
-                      createdAt: null
-                    },
-                    uid: 123,
+                    user: result.user,
+                    uid: credential.accessToken,
                     userTree: TREESAMPLE
                   }
                 });
@@ -157,25 +149,10 @@ export default function Login() {
             // This gives you a Google Access Token. You can use it to access the Google API.
             const credential = GoogleAuthProvider.credentialFromResult(result);
             // The signed-in user info.
-            const {
-              displayName,
-              email,
-              emailVerified,
-              isAnonymous,
-              photoURL,
-              metadata
-            } = result.user;
             dispatch({
               type: "LOGIN",
               payload: {
-                user: {
-                  displayName,
-                  email,
-                  emailVerified,
-                  isAnonymous,
-                  photoURL,
-                  createdAt: metadata.createdAt
-                },
+                user: result.user,
                 uid: credential.accessToken,
                 userTree: TREESAMPLE
               }

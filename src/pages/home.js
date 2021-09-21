@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 
 import { useAppContext } from '../context/AppContext';
-import Terminal from '../components/terminal'
+import Terminal from '../components/terminal/Terminal'
 import { db } from '../firebase/FirebaseConfig';
 
 export default function Home({ history }) {
@@ -15,7 +15,7 @@ export default function Home({ history }) {
   };
 
   const logic = ({ code }) => {
-    if (["hello", "game", "art"].indexOf(code) >= 0) {
+    if (Object.keys(ascii).indexOf(code) >= 0) {
       const response = ascii[code];
       addConsoleScreen({ prefix, command: code, block: true, response });
     } else if (code.toLowerCase().replace(/\s+/g, "") === "logout") {

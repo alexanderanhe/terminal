@@ -1,0 +1,182 @@
+@import "./Mixins.scss";
+:root[data-theme="theme-clasic"] {
+  --font-family: AndaleMono, monospace;
+  --font-size: .9em;
+  --primary-color: #1ff042;
+  --sencondary-color: gray;
+  --info-color: yellow;
+  --warning-color: yellow;
+  --error-color: red;
+  --prompt-margin: 0.8em;
+  
+  --background-color: #000;
+  --background-image: none;
+  --background-selection: #0080ff;
+  --primary-text-shadow: 0 0 2px rgba(31, 240, 66, 0.75);
+  --primary-text-color: var(--primary-color);
+  --error-text-color: var(--error-color);
+  --secondary-text-shadow: var(--primary-text-shadow);
+  --secondary-text-color: var(--sencondary-color);
+  --terminal-background-color: #000;
+}
+
+:root[data-theme="theme-monitor"] {
+  --font-family: Inconsolata, monospace;
+  --font-size: 1.1rem;
+  --primary-color: #fff;
+  --sencondary-color: #22481b;
+  --info-color: yellow;
+  --warning-color: yellow;
+  --error-color: red;
+  --prompt-margin: var(--font-size);
+
+  --background-color: #000;
+  --background-image: radial-gradient(rgba(0, 150, 0, 0.75), black 120%);
+  --background-selection: #0080ff;
+  --primary-text-shadow: 0 0 5px #c8c8c8;
+  --primary-text-color: var(--primary-color);
+  --error-text-color: var(--error-color);
+  --secondary-text-shadow: 0 0 2px #c8c8c8;
+  --secondary-text-color: var(--sencondary-color);
+  --terminal-background-color: #000;
+}
+
+html, body {
+  background-color: var(--background-color);
+  background-image: var(--background-image);
+  color: var(--primary-text-color);
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 1px, transparent 1px, transparent 2px);
+  pointer-events: none;
+}
+
+.terminal {
+  @include primary-text();
+  position: relative;
+  padding: calc(100% * 0.02) calc(100% * 0.05);
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  ::selection {
+    background: var(--background-selection);
+    text-shadow: none;
+  }
+  & .prompt {
+    display: block;
+    margin: var(--prompt-margin) 0;
+    line-height: 1.5rem;
+    &:before {
+      content: attr(data-prefix);
+      display: inline-block;
+      word-break: break-word;
+    }
+    &.new-output {
+      display: inline-block;
+      &.active:after {
+        display: inline-block;
+        vertical-align: -.15em;
+        width: .75em;
+        height: 1em;
+        margin-left: 5px;
+        background: var(--primary-color, #1ff042);
+        box-shadow: 1px 1px 1px rgba(31, 240, 66, 0.65), -1px -1px 1px rgba(31, 240, 66, 0.65), 1px -1px 1px rgba(31, 240, 66, 0.65), -1px 1px 1px rgba(31, 240, 66, 0.65);
+        -webkit-animation: cursor-blink 1.25s steps(1) infinite;
+        animation: cursor-blink 1.25s steps(1) infinite;
+        content: "";
+      }
+      & input.invisible {
+        position: fixed;
+        left: 0;
+        background-color: #000;
+        width: 100%;
+        bottom: 0;
+        color: #FFF;
+        opacity: 0;
+        cursor: none;
+        z-index: -1;
+      }
+    }
+    &.new-output span {
+      color: var(--secondary-text-color);
+      text-shadow: var(--secondary-text-shadow);
+    }
+  }
+  & ul {
+    padding: 0;
+    margin: 0;
+    & li.result {
+      @include primary-text();
+      display: block;
+      width: 100%;
+      letter-spacing: .15em;
+      white-space: pre-wrap;
+      text-shadow: var(--primary-text-shadow);
+      line-height: 1;
+      margin: calc(var(--prompt-margin) / 2) 0;
+    }
+    
+    &.block {
+      position: relative;
+      & li.result {
+        white-space: pre;
+      }
+    }
+    @media (max-width: $breakpoint-sm) {
+      &.block {
+        -webkit-animation: run 5s linear infinite;
+        animation: run 5s linear infinite;
+      }
+    }
+    &.error li.result {
+      color: var(--error-text-color);
+    }
+  }
+}
+.loader {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .6);
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  &__spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 20px;
+    &:after {
+      content: " ";
+      display: block;
+      width: 16px;
+      height: 32px;
+      margin: 8px;
+      border-radius: 50%;
+      border: 6px solid var(--primary-color);
+      border-color: var(--primary-color) transparent var(--primary-color) transparent;
+      animation: loader-animation 1.2s linear infinite;
+    }
+  }
+  &__text {
+    @include primary-text();
+    font-size: 2rem;
+    line-height: 24px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+}

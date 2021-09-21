@@ -3,7 +3,15 @@ import { PREFIX } from "../hooks/localStorage";
 export default function Reducer(state, action) {
   switch (action.type) {
     case "LOGIN":
-      const { uid, user, userTree } = action.payload;
+      const { uid, user: userData, userTree } = action.payload;
+      const user = {
+        displayName: userData.displayName,
+        email: userData.email,
+        emailVerified: userData.emailVerified,
+        isAnonymous: userData.isAnonymous,
+        photoURL: userData.photoURL,
+        metadata: userData.metadata
+      };
       localStorage.setItem(`${PREFIX}user`, JSON.stringify(user));
       localStorage.setItem(`${PREFIX}uid`, JSON.stringify(uid));
       localStorage.setItem(`${PREFIX}userTree`, JSON.stringify(userTree));
@@ -23,9 +31,16 @@ export default function Reducer(state, action) {
         user: {},
         uid: null
       };
+    case "CHANGE_THEME":
+      const themeValidation = state.theme === "clasic" ? "monitor" : "clasic";
+        localStorage.setItem(`${PREFIX}theme`, JSON.stringify(themeValidation));
+        return {
+          ...state,
+          theme: themeValidation
+        };
     case "CHANGE_LANGUAGE":
       const langValidation = state.lang === "en" ? "es" : "en";
-      localStorage.setItem("lang", JSON.stringify(langValidation));
+      localStorage.setItem(`${PREFIX}lang`, JSON.stringify(langValidation));
       return {
         ...state,
         lang: langValidation
