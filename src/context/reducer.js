@@ -12,7 +12,7 @@ export default function Reducer(state, action) {
         user,
         uid,
         userTree,
-        consoleScreen: [{ response: state.ascii["hello"], block: true }]
+        consoleScreen: [{ response: state.ascii["authenticated"], block: true }]
       };
     case "LOGOUT":
       localStorage.removeItem(`${PREFIX}user`);
