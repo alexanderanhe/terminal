@@ -14,7 +14,7 @@ const Loader = ({ message }) => (
 );
 
 export default function Terminal({ logic, prefix, setPrefix, userTree }) {
-  const [{ consoleScreen, user, isLoading }, dispatch] = useAppContext();
+  const [{ theme, consoleScreen, user, isLoading }, dispatch] = useAppContext();
   const input = useRef(null);
   const inputBox = useRef(null);
   // const [code, setCode] = useState("");
@@ -91,7 +91,7 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
     if (!tools.code) {
       handleFocus();
     }
-  }, [tools.code, consoleScreen]);
+  }, [tools.code, consoleScreen, theme]);
 
   return (
     <>
