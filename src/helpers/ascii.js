@@ -46,6 +46,15 @@ export default function getASCII() {
       "                                  (_____|                    ",
       "\n",
       "\n",
-      ]
+    ],
+    login: [
+      "   ███████████████████████████",
+      "   ██\t\t\t\t  ██",
+      "   ██\t» auth google\t  ██",
+      "   ██\t» auth email\t\t  ██",
+      "   ██\t» register\t\t  ██",
+      "   ██\t\t\t\t  ██",
+      "   ███████████████████████████",
+    ]
   };
 }

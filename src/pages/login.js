@@ -207,13 +207,7 @@ export default function Login() {
       type: "CONSOLESCREEN",
       payload: {
         command: "Hello and welcome! type an authentication or registration form to get started\n(ex. 'auth google')",
-        response: [
-          "\nauth",
-          "\tgoogle\tGoogle Authentication (PopUp)",
-          "\temail\t\tEmail authentication [-u | --username] [-p | --password]",
-          "\nregister\t\tClassic email registration",
-          "\n\n"
-        ]
+        response: ascii["login"]
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
