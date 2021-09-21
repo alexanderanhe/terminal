@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useAppContext } from "../../context/AppContext";
+import { useAppContext } from "../context/AppContext";
 
 // import "layout.css";
 
-import Header from "../header";
-import Footer from "../footer";
+import Header from "./Header";
+import Footer from "./Footer";
 
 export default function Layout({ children }) {
   const [{ uid }] = useAppContext();
@@ -27,13 +27,13 @@ export default function Layout({ children }) {
 
   return (
     <div className={`layout${!uid ? " layout--auth" : ""}`}>
-      <Header auth={!uid} />
+      <Header/>
       <main className="layout__content">
         <div className="terminal-container" data-termheight={windowSize.height}>
           {children}
         </div>
       </main>
-      {uid ? <Footer /> : null}
+      <Footer/>
     </div>
   );
 }

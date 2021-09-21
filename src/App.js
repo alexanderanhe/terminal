@@ -3,7 +3,7 @@ import HttpsRedirect from 'react-https-redirect';
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import { useAppContext } from "./context/AppContext";
-import Layout from './components/layout';
+import Layout from './components/Layout';
 import Home from "./pages/home";
 import Login from './pages/login';
 import Chat from './pages/chat';

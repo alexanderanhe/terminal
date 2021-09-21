@@ -62,6 +62,11 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
   };
   const handleFocus = () => {
     if (input.current) {
+      inputBox.current.scrollTo({
+        top: inputBox.current.firstElementChild.clientHeight,
+        left: 0,
+        behavior: 'smooth'
+      });
       input.current.focus();
     }
   };
@@ -84,11 +89,7 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
 
   useEffect(() => {
     if (!tools.code) {
-      inputBox.current.scrollTo({
-        top: inputBox.current.firstElementChild.clientHeight,
-        left: 0,
-        behavior: 'smooth'
-      });
+      handleFocus();
     }
   }, [tools.code, consoleScreen]);
 

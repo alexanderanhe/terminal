@@ -1,12 +1,12 @@
 import React from 'react';
-import { useAppContext } from '../../context/AppContext';
+import { useAppContext } from '../context/AppContext';
 
 export default function Footer() {
-  const [ {isLoading }] = useAppContext();
+  const [ { uid, isLoading }] = useAppContext();
   return (
     <footer className="footer">
       <span className="footer_notification">
-        AUTHENTICATED
+        { uid ? "AUTHENTICATED" : null}
         { isLoading ? " ⏳ " : null }
       </span>
     </footer>
