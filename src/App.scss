@@ -1,5 +1,6 @@
 :root {
   --header-height: 2rem;
+  --footer-height: var(--header-height);
 }
 * {
   box-sizing: border-box;
@@ -33,18 +34,15 @@
 }
 @media (max-width: 425px) {
   .terminal-container {
-    /* height: calc(attr(data-termheight)px - var(--header-height)); */
-    height: calc(100vh/2 - var(--header-height));
+    height: calc(100vh/2 - var(--header-height) - var(--footer-height));
   }
 }
 .footer {
   display: flex;
   align-items: center;
-  position: fixed;
-  bottom: 0;
   width: 100%;
   max-width: 1700px;
-  height: 2rem;
+  height: var(--footer-height);
   background-color: transparent;
   color: gray;
   flex-direction: row-reverse;
