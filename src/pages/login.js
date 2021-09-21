@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 
 import { useAppContext } from '../context/AppContext';
 import Terminal from '../components/terminal/Terminal';
@@ -144,28 +144,7 @@ export default function Login() {
         const auth = getAuth();
         auth.languageCode = lang;
         dispatch({ type: "LOADER", payload: "Loading" });
-        signInWithPopup(auth, provider)
-          .then((result) => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            // The signed-in user info.
-            dispatch({
-              type: "LOGIN",
-              payload: {
-                user: result.user,
-                uid: credential.accessToken,
-                userTree: TREESAMPLE
-              }
-            });
-            dispatch({ type: "LOADER", payload: false });
-          }).catch((error) => {
-            // Handle Errors here.
-            // eslint-disable-next-line no-unused-vars
-            const { code: errorCode, message: errorMessage } = error;
-            // The AuthCredential type that was used.
-            dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`${errorMessage}`] } });
-            dispatch({ type: "LOADER", payload: false });
-          });
+        signInWithRedirect(auth, provider);
       })();
     } else {
       dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`Command "${code}" not found`] } });
@@ -187,6 +166,33 @@ export default function Login() {
         response: ascii["login"]
       }
     });
+
+    const auth = getAuth();
+    (() => {
+      dispatch({ type: "LOADER", payload: "Loading" });
+      getRedirectResult(auth)
+        .then((result) => {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          // The signed-in user info.
+          dispatch({
+            type: "LOGIN",
+            payload: {
+              user: result.user,
+              uid: credential.accessToken,
+              userTree: TREESAMPLE
+            }
+          });
+          dispatch({ type: "LOADER", payload: false });
+        }).catch((error) => {
+          // Handle Errors here.
+          // eslint-disable-next-line no-unused-vars
+          const { code, message: errorMessage } = error;
+          // The AuthCredential type that was used.
+          // dispatch({ type: "CONSOLESCREEN", payload: { command: code, error: true, response: [`${errorMessage}`] } });
+          dispatch({ type: "LOADER", payload: false });
+        });
+    })();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

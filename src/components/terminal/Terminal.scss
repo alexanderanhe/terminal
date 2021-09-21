@@ -179,4 +179,9 @@ body::after {
     text-align: center;
     letter-spacing: 0.05em;
   }
+  @media (max-width: 425px) {
+    & {
+      height: calc(100% / 2);
+    }
+  }
 }

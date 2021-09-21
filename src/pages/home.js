@@ -20,6 +20,13 @@ export default function Home({ history }) {
       addConsoleScreen({ prefix, command: code, block: true, response });
     } else if (code.toLowerCase().replace(/\s+/g, "") === "logout") {
       dispatch({ type: "LOGOUT" });
+      getAuth().signOut().then(function() {
+        // Sign-out successful.
+        console.log("Logout success");
+      }, function(error) {
+        // An error happened.
+        console.log("Logout something was happend", error.message);
+      });
     } else if (code === "getData") {
       const getData = async() => {
         try {
