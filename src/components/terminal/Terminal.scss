@@ -181,7 +181,7 @@ body::after {
   }
   @media (max-width: 425px) {
     & {
-      height: calc(100% / 2);
+      height: 50vh;
     }
   }
 }
