@@ -113,7 +113,7 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
           </>
           <p className={"prompt output new-output" + (tools.focus ? " active" : "")}  data-prefix={`${prefix || ""}> `}>
             <input
-              type="url"
+              type="text"
               className="invisible"
               ref={input}
               onChange={handleChange}
