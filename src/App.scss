@@ -21,8 +21,9 @@
   box-sizing: border-box;
   width: 100%;
   height: var(--header-height);
-  background-color: #252525;
-  border-radius: 0.3rem;
+  background-color: #333334;
+  border-radius: 0.3rem 0.3rem 0 0;
+  border-bottom: 1px solid #666;
   &__content {
     align-items: center;
     display: flex;
@@ -30,8 +31,24 @@
     margin: 0 auto;
     max-width: 1700px;
     height: 100%;
-    padding: 0 calc(100% * 0.05);
+    padding: 0 calc(100% * 0.02);
     width: 100%;
+    & span {
+      display: inline-flex;
+      width: 10px;
+      height: 10px;
+      margin-right: 7px;
+      border-radius: 50%;
+      &:nth-child(1) {
+        background-color: #f65f57;
+      }
+      &:nth-child(2) {
+        background-color: #fabc2f;
+      }
+      &:nth-child(3) {
+        background-color: #44c840;
+      }
+    }
   }
 }
 .terminal-container {
