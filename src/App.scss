@@ -80,13 +80,13 @@
     font-size: 1rem;
     align-self: stretch;
     flex-grow: 1;
-    &:nth-child(1)::before {
+    &:first-child {
+      max-width: 200px;
+    }
+    &:first-child::before {
       content: "▪";
     }
     &:nth-child(2) {
-      text-align: center;
-    }
-    &:nth-child(3) {
       text-align: right;
       font-size: 0.8rem;
       letter-spacing: 0.3em;

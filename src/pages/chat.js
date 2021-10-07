@@ -210,7 +210,7 @@ export default function Chat({ history }) {
       dispatch({
         type: "CONSOLESCREEN",
         payload: {
-          command: `${user.email || user.displayName} has joined`,
+          command: `${user.email || user.displayName} has joined <<<<<<<<<<`,
           style: { color: "#37b4e9"},
           prefix: ">>>>>>>>>"
         }
