@@ -81,13 +81,12 @@ export default function Login() {
             const responseManage = (promise) => {
               promise.then((result) => {
                 // Signed in
-                const credential = GoogleAuthProvider.credentialFromResult(result);
                 setProcess({ ...process, type: null, step: 0, newForm: {} });
                 dispatch({
                   type: "LOGIN",
                   payload: {
                     user: result.user,
-                    uid: credential.accessToken,
+                    uid: result.user.uid,
                     userTree: TREESAMPLE
                   }
                 });
@@ -99,8 +98,7 @@ export default function Login() {
                 const { code: errorCode, message: errorMessage } = error;
                 // The AuthCredential type that was used.
                 // eslint-disable-next-line no-unused-vars
-                const credential = GoogleAuthProvider.credentialFromError(error);
-                console.log(credential);
+                console.error(error);
                 // ...
                 dispatch({ type: "CONSOLESCREEN", payload: { command: "", error: true, response: [`${errorMessage}`] } });
                 setProcess({ ...process, type: null, step: 0, form: {}});

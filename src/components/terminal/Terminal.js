@@ -13,7 +13,7 @@ const Loader = ({ message }) => (
   </div>
 );
 
-export default function Terminal({ logic, prefix, setPrefix, userTree }) {
+export default function Terminal({ logic, prefix, setPrefix, userTree, onHandleChange }) {
   const [{ theme, consoleScreen, user, isLoading }, dispatch] = useAppContext();
   const input = useRef(null);
   const inputBox = useRef(null);
@@ -32,9 +32,10 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
 
 
   const handleChange = (event) => {
+    const code = (history[history.length - tools.cursor] || "") + event.target.value;
     setTools({
       ...tools,
-      code: (history[history.length - tools.cursor] || "") + event.target.value,
+      code,
       cursor: 0
     });
   };
@@ -92,6 +93,13 @@ export default function Terminal({ logic, prefix, setPrefix, userTree }) {
       handleFocus();
     }
   }, [tools.code, consoleScreen, theme]);
+
+  useEffect(() => {
+    if (onHandleChange) {
+      onHandleChange(tools.code);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tools.code])
 
   return (
     <>

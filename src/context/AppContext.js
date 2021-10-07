@@ -20,7 +20,8 @@ export function AppContextProvider({ children }) {
     uid,
     userTree,
     consoleScreen: [],
-    isLoading: false
+    isLoading: false,
+    stateMessage: ""
   };
 
   return (

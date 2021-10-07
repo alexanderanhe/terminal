@@ -8,6 +8,8 @@ import { useSocket } from '../context/SocketContext';
 import { useParams } from 'react-router';
 // import { db } from '../firebase/FirebaseConfig';
 
+import notif from '../notify.mp3';
+
 const PROCESS = [
   {
     output: ["Type roomId:"],
@@ -28,8 +30,30 @@ export default function Chat({ history }) {
   });
   const socket = useSocket();
   const { room } = useParams();
+  const [input, setInput] = useState("");
+  const audio = new Audio(notif);
+  
+  const notify = () => {
+    const playPromise = audio.play();
+    audio.volume = 0.5;
+    if (playPromise !== undefined) {
+      playPromise
+        .then(_ => {
+          // Automatic playback started!
+          // Show playing UI.
+          console.log("audio played auto");
+        })
+        .catch(error => {
+          // Auto-play was prevented
+          // Show paused UI.
+          console.log("playback prevented");
+        });
+    }
+  }
 
   const newRoom = () => Math.random().toString(36).slice(-6).toUpperCase();
+
+  const onHandleChange = (code) => setInput(code);
 
   const login = (form, callback) => {
     const keys = PROCESS.map((process) => process.input);
@@ -163,7 +187,7 @@ export default function Chat({ history }) {
     const messageFormat = ({ message, sender}) => {
       const { displayName, email, textColor } = JSON.parse(sender);
       return {
-        prefix: displayName || email,
+        prefix: email || displayName,
         command: message,
         style: { color: textColor || "#FFF" }
       };
@@ -171,6 +195,7 @@ export default function Chat({ history }) {
 
     socket.on("receive", ({ message, sender}) => {
       dispatch({ type: "CONSOLESCREEN", payload: messageFormat({message, sender})});
+      notify();
     });
 
     socket.on("history", (messages) => {
@@ -180,14 +205,51 @@ export default function Chat({ history }) {
         dispatch({ type: "CONSOLESCREEN", payload });
       }
     });
+
+    socket.on("userjoinroom", (user) => {
+      dispatch({
+        type: "CONSOLESCREEN",
+        payload: {
+          command: `${user.email || user.displayName} has joined`,
+          style: { color: "#37b4e9"},
+          prefix: ">>>>>>>>>"
+        }
+      });
+      notify();
+    });
+
+    socket.on("usertyping", (user) => {
+      dispatch({
+        type: "STATE_MESSAGE",
+        payload: `${user.email || user.displayName} is typing`
+      });
+    });
+    
+    socket.on("userstoppedtyping", (user) => {
+      dispatch({ type: "CLEAR_STATE_MESSAGE" });
+    });
+
     return () => {
       socket.off("receive");
       socket.off("history");
+      socket.off("userjoinroom");
+      socket.off("usertyping");
+      socket.off("userstoppedtyping");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ socket ]);
 
+  useEffect(() => {
+    if (!process.form?.room) return;
+    if (input) {
+      socket?.emit("typing", process.form?.room);
+    } else {
+      socket?.emit("stoppedTyping", process.form?.room);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [input])
+
   return (
-    <Terminal logic={handleSubmit} prefix={prefix} />
+    <Terminal logic={handleSubmit} prefix={prefix} onHandleChange={onHandleChange} />
   )
 }

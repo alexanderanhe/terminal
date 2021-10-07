@@ -67,6 +67,16 @@ export default function Reducer(state, action) {
         ...state,
         isLoading: action.payload
       };
+    case "STATE_MESSAGE":
+      return {
+        ...state,
+        stateMessage: action.payload
+      };
+    case "CLEAR_STATE_MESSAGE":
+      return {
+        ...state,
+        stateMessage: ""
+      };
     default:
       return state;
   }

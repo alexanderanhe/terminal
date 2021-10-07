@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext';
 
 export default function Footer() {
-  const [ { uid, isLoading }] = useAppContext();
+  const [ { uid, isLoading, stateMessage }] = useAppContext();
   const location = useLocation();
 
   return (
@@ -11,8 +11,12 @@ export default function Footer() {
       <span>{ location.pathname }</span>
       <span>{" "}</span>
       <span>
-        { uid ? "AUTHENTICATED " : null}
-        { isLoading ? " ⏳ " : null }
+        { stateMessage ? stateMessage : (
+          <>
+            { uid ? "AUTHENTICATED " : null}
+            { isLoading ? " ⏳ " : null }
+          </>
+        )}
       </span>
     </footer>
   )
