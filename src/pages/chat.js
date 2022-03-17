@@ -49,13 +49,15 @@ export default function Chat({ history }) {
           console.log("playback prevented");
         });
     }
-    const {sender, message: body} = data;
-    Notification?.requestPermission()
-      .then((userPermission) => {
-        if (userPermission === "granted") {
-          new Notification(sender, { body });
-        }
-      })
+    if ("Notification" in window) {
+      const {sender, message: body} = data;
+      Notification.requestPermission()
+        .then((userPermission) => {
+          if (userPermission === "granted") {
+            new Notification(sender, { body });
+          }
+        })
+    }
   }
 
   const newRoom = () => Math.random().toString(36).slice(-6).toUpperCase();
