@@ -33,7 +33,7 @@ export default function Chat({ history }) {
   const [input, setInput] = useState("");
   const audio = new Audio(notif);
   
-  const notify = () => {
+  const notify = (data) => {
     const playPromise = audio.play();
     audio.volume = 0.5;
     if (playPromise !== undefined) {
@@ -48,6 +48,15 @@ export default function Chat({ history }) {
           // Show paused UI.
           console.log("playback prevented");
         });
+    }
+    if (Notification != undefined) {
+      const {sender, message: body} = data;
+      Notification.requestPermission()
+        .then((userPermission) => {
+          if (userPermission === "granted") {
+            new Notification(sender, { body });
+          }
+        })
     }
   }
 
@@ -195,7 +204,7 @@ export default function Chat({ history }) {
 
     socket.on("receive", ({ message, sender}) => {
       dispatch({ type: "CONSOLESCREEN", payload: messageFormat({message, sender})});
-      notify();
+      notify({sender, message});
     });
 
     socket.on("history", (messages) => {
@@ -207,15 +216,16 @@ export default function Chat({ history }) {
     });
 
     socket.on("userjoinroom", (user) => {
+      const message = `${user.email || user.displayName} has joined <<<`;
       dispatch({
         type: "CONSOLESCREEN",
         payload: {
-          command: `${user.email || user.displayName} has joined <<<`,
+          command: message,
           style: { color: "#37b4e9", textAlign: "center" },
           prefix: ">>"
         }
       });
-      notify();
+      notify({ message });
     });
 
     socket.on("usertyping", (user) => {
