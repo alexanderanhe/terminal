@@ -49,12 +49,16 @@ export default function Chat({ history }) {
           console.log("playback prevented");
         });
     }
-    if ("Notification" in window) {
-      const {sender, message: body} = data;
+    const {sender, message: body} = data;
+    if (!("Notification" in window)) {
+      console.error("This browser does not support desktop notifications");
+    } else if (Notification.permission === "granted") {
+      var notification = new Notification(sender, { body });
+    } else if (Notification.permission !== "denied") {
       Notification.requestPermission()
-        .then((userPermission) => {
-          if (userPermission === "granted") {
-            new Notification(sender, { body });
+        .then((permission) => {
+          if (permission === "granted") {
+            var notification = new Notification(sender, { body });
           }
         })
     }
