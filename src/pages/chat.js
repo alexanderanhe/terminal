@@ -49,19 +49,19 @@ export default function Chat({ history }) {
           console.log("playback prevented");
         });
     }
-    const {sender, message: body} = data;
-    if (!("Notification" in window)) {
-      console.error("This browser does not support desktop notifications");
-    } else if (Notification.permission === "granted") {
-      var notification = new Notification(sender, { body });
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission()
-        .then((permission) => {
-          if (permission === "granted") {
-            var notification = new Notification(sender, { body });
-          }
-        })
-    }
+    // const {sender, message: body} = data;
+    // if (!("Notification" in window)) {
+    //   console.error("This browser does not support desktop notifications");
+    // } else if (Notification.permission === "granted") {
+    //   var notification = new Notification(sender, { body });
+    // } else if (Notification.permission !== "denied") {
+    //   Notification.requestPermission()
+    //     .then((permission) => {
+    //       if (permission === "granted") {
+    //         var notification = new Notification(sender, { body });
+    //       }
+    //     })
+    // }
   }
 
   const newRoom = () => Math.random().toString(36).slice(-6).toUpperCase();
